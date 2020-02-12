@@ -1,0 +1,113 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xmlns="http://maven.apache.org/POM/4.0.0"
+  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <artifactId>rubiks-cube-solver-web</artifactId>
+  <description>Solve Rubiks Cubes on the web</description>
+  <modelVersion>4.0.0</modelVersion>
+
+  <name>rubiks-cube-solver-web</name>
+  <packaging>jar</packaging>
+  <parent>
+    <artifactId>rubiks-cube-solver</artifactId>
+    <groupId>com.cheemcheem.experimental</groupId>
+    <version>1.0-SNAPSHOT</version>
+  </parent>
+  <profiles>
+    <profile>
+      <activation>
+        <activeByDefault>true</activeByDefault>
+      </activation>
+      <id>dev</id>
+      <properties>
+        <spring.profiles.active>dev</spring.profiles.active>
+      </properties>
+    </profile>
+    <profile>
+      <build>
+        <plugins>
+          <plugin>
+            <artifactId>maven-resources-plugin</artifactId>
+            <executions>
+              <execution>
+                <configuration>
+                  <outputDirectory>${basedir}/target/classes/static</outputDirectory>
+                  <resources>
+                    <resource>
+                      <directory>app/build</directory>
+                    </resource>
+                  </resources>
+                </configuration>
+                <goals>
+                  <goal>copy-resources</goal>
+                </goals>
+                <id>copy-resources</id>
+                <phase>process-classes</phase>
+              </execution>
+            </executions>
+          </plugin>
+          <plugin>
+            <artifactId>frontend-maven-plugin</artifactId>
+            <configuration>
+              <workingDirectory>app</workingDirectory>
+            </configuration>
+            <executions>
+              <execution>
+                <configuration>
+                  <nodeVersion>${node.version}</nodeVersion>
+                </configuration>
+                <goals>
+                  <goal>install-node</goal>
+                </goals>
+                <id>install node</id>
+              </execution>
+              <execution>
+                <goals>
+                  <goal>npm</goal>
+                </goals>
+                <id>npm install</id>
+                <phase>generate-resources</phase>
+              </execution>
+              <execution>
+                <configuration>
+                  <arguments>test</arguments>
+                  <environmentVariables>
+                    <CI>true</CI>
+                  </environmentVariables>
+                </configuration>
+                <goals>
+                  <goal>npm</goal>
+                </goals>
+                <id>npm test</id>
+                <phase>test</phase>
+              </execution>
+              <execution>
+                <configuration>
+                  <arguments>build</arguments>
+                </configuration>
+                <goals>
+                  <goal>npm</goal>
+                </goals>
+                <id>npm build</id>
+                <phase>compile</phase>
+              </execution>
+            </executions>
+            <groupId>com.github.eirslett</groupId>
+            <version>${frontend-maven-plugin.version}</version>
+          </plugin>
+        </plugins>
+      </build>
+      <id>prod</id>
+      <properties>
+        <spring.profiles.active>prod</spring.profiles.active>
+      </properties>
+    </profile>
+  </profiles>
+
+  <properties>
+    <frontend-maven-plugin.version>1.6</frontend-maven-plugin.version>
+    <node.version>v11.4.0</node.version>
+  </properties>
+
+  <version>1.0-SNAPSHOT</version>
+</project>
