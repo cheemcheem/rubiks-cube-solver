@@ -1,19 +1,17 @@
 package com.cheemcheem.experimental.rubikscubesolver.utility;
 
-import static com.cheemcheem.experimental.rubikscubesolver.model.Colour.BLUE;
-import static com.cheemcheem.experimental.rubikscubesolver.model.Colour.GREEN;
-import static com.cheemcheem.experimental.rubikscubesolver.model.Colour.ORANGE;
-import static com.cheemcheem.experimental.rubikscubesolver.model.Colour.RED;
-import static com.cheemcheem.experimental.rubikscubesolver.model.Colour.WHITE;
-import static com.cheemcheem.experimental.rubikscubesolver.model.Colour.YELLOW;
-
 import com.cheemcheem.experimental.rubikscubesolver.model.Colour;
 import com.cheemcheem.experimental.rubikscubesolver.model.State;
-import java.util.ArrayList;
-import java.util.List;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.stereotype.Component;
 
+import java.util.ArrayList;
+import java.util.List;
+
+import static com.cheemcheem.experimental.rubikscubesolver.model.Colour.*;
+
+@Component
 public class StateBuilder {
 
   private static final Logger logger = LoggerFactory.getLogger(StateBuilder.class);

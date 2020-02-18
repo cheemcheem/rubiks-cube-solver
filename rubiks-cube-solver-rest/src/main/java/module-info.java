@@ -1,4 +1,5 @@
 module rubiks.cube.solver {
+  requires commons.validator;
   requires com.fasterxml.classmate;
   requires com.fasterxml.jackson.core;
   requires com.fasterxml.jackson.databind;
@@ -13,6 +14,7 @@ module rubiks.cube.solver {
   requires spring.boot.autoconfigure;
   requires spring.context;
   requires spring.data.jpa;
+  requires spring.webmvc;
   requires spring.security.config;
   requires spring.security.core;
   requires spring.security.web;
@@ -25,7 +27,8 @@ module rubiks.cube.solver {
   opens com.cheemcheem.experimental.rubikscubesolver to spring.core, spring.beans, spring.context;
   opens com.cheemcheem.experimental.rubikscubesolver.config to spring.core, spring.beans, spring.context;
   opens com.cheemcheem.experimental.rubikscubesolver.controller to spring.beans, spring.web;
-  opens com.cheemcheem.experimental.rubikscubesolver.dao to com.fasterxml.jackson.databind;
+  opens com.cheemcheem.experimental.rubikscubesolver.dto to com.fasterxml.jackson.databind;
+  opens com.cheemcheem.experimental.rubikscubesolver.interceptor to spring.beans;
   opens com.cheemcheem.experimental.rubikscubesolver.model to spring.core, spring.beans, spring.data.jpa, org.hibernate.orm.core;
   opens com.cheemcheem.experimental.rubikscubesolver.repository to spring.beans, spring.core;
   opens com.cheemcheem.experimental.rubikscubesolver.service to spring.core, spring.beans;
