@@ -14,39 +14,41 @@ import java.util.regex.Pattern;
 
 @Component
 public class StateCreatedInterceptor implements HandlerInterceptor {
-    private static final Logger logger = LoggerFactory.getLogger(StateCreatedInterceptor.class);
-    private final Predicate<String> excludedPaths = Pattern.compile("(/api/state/new)|(/api/authentication)").asMatchPredicate();
+  private static final Logger logger = LoggerFactory.getLogger(StateCreatedInterceptor.class);
+  private final Predicate<String> excludedPaths = Pattern.compile("(/api/state/new)|(/api/authentication)").asMatchPredicate();
 
-    @Override
-    public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) {
-        logger.info("StateCreatedInterceptor.preHandle");
-        logger.debug("Path '{}'", request.getServletPath());
-        if (excludedPaths.test(request.getServletPath())) {
-            logger.info("Path does not require state, proceeding.");
-            return true;
-        }
-
-        var session = request.getSession();
-        var stateId = session.getAttribute(Constants.STATE_SESSION_KEY);
-
-        if (stateId == null) {
-            logger.error("Interceptor failed. State id attached to session is null.");
-            return false;
-        } else {
-            logger.debug("State id '{}' attached to session '{}'.", stateId, session.getId());
-        }
-
-        var stateIdString = stateId.toString();
-        var stateIdLong = LongValidator.getInstance().validate(stateIdString);
-        if (stateIdLong == null) {
-            logger.error("Interceptor failed. State id in session is not a valid Long '{}'.", stateIdString);
-            return false;
-        }
-
-        request.setAttribute(Constants.STATE_ATTRIBUTE_KEY, stateIdLong);
-        logger.info("Attached state id to request.");
-        logger.debug("Attached state id '{}' to request.", stateIdString);
-        return true;
-
+  @Override
+  public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) {
+    logger.info("StateCreatedInterceptor.preHandle");
+    logger.debug("Path '{}'", request.getServletPath());
+    if (excludedPaths.test(request.getServletPath())) {
+      logger.info("Path does not require state, proceeding.");
+      return true;
     }
+
+    var session = request.getSession();
+    var stateId = session.getAttribute(Constants.STATE_SESSION_KEY);
+
+    if (stateId == null) {
+      logger.warn("Interceptor failed. State id attached to session is null.");
+      response.setStatus(404);
+      return false;
+    } else {
+      logger.debug("State id '{}' attached to session '{}'.", stateId, session.getId());
+    }
+
+    var stateIdString = stateId.toString();
+    var stateIdLong = LongValidator.getInstance().validate(stateIdString);
+    if (stateIdLong == null) {
+      logger.warn("Interceptor failed. State id in session is not a valid Long '{}'.", stateIdString);
+      response.setStatus(404);
+      return false;
+    }
+
+    request.setAttribute(Constants.STATE_ATTRIBUTE_KEY, stateIdLong);
+    logger.info("Attached state id to request.");
+    logger.debug("Attached state id '{}' to request.", stateIdString);
+    return true;
+
+  }
 }

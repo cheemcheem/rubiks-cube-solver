@@ -20,6 +20,12 @@ public class DemoConfiguration {
   private static final Logger logger = LoggerFactory.getLogger(DemoConfiguration.class);
   private final StateService stateService;
 
+  /**
+   * Runs a demo version of this application. For testing only.
+   *
+   * @param context Autowired ConfigurableApplicationContext to extract beans from.
+   * @return CommandLineRunner
+   */
   @Bean
   public CommandLineRunner demo(ConfigurableApplicationContext context) {
     return (args -> {

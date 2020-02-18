@@ -9,7 +9,12 @@ import org.springframework.stereotype.Component;
 import java.util.ArrayList;
 import java.util.List;
 
-import static com.cheemcheem.experimental.rubikscubesolver.model.Colour.*;
+import static com.cheemcheem.experimental.rubikscubesolver.model.Colour.BLUE;
+import static com.cheemcheem.experimental.rubikscubesolver.model.Colour.GREEN;
+import static com.cheemcheem.experimental.rubikscubesolver.model.Colour.ORANGE;
+import static com.cheemcheem.experimental.rubikscubesolver.model.Colour.RED;
+import static com.cheemcheem.experimental.rubikscubesolver.model.Colour.WHITE;
+import static com.cheemcheem.experimental.rubikscubesolver.model.Colour.YELLOW;
 
 @Component
 public class StateBuilder {

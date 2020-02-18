@@ -4,7 +4,11 @@ import lombok.Data;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import javax.persistence.*;
+import javax.persistence.ElementCollection;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
 import java.util.List;
 
 @Data
@@ -18,6 +22,8 @@ public class State {
   private Long id;
 
   /**
+   * List of colours representing the state of the Rubik's cube.
+   * See:
    * <pre>
    *              | 36 37 38 |
    *              | 39 40 41 |

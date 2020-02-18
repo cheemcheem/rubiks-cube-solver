@@ -132,19 +132,19 @@ public class ValidatorService {
   }
 
   private boolean checkCorners(Colour colour1, Colour colour2, Colour colour3,
-      State state) {
+                               State state) {
     // todo this can be more efficient by not having parameters and using global/final variables
     var list = List.of(colour1, colour2, colour3);
 
     var positions = List.of(
-        2, 9, 42,
-        8, 15, 45,
-        0, 29, 36,
-        6, 35, 51,
-        18, 12, 44,
-        24, 17, 47,
-        20, 27, 38,
-        26, 33, 53
+            2, 9, 42,
+            8, 15, 45,
+            0, 29, 36,
+            6, 35, 51,
+            18, 12, 44,
+            24, 17, 47,
+            20, 27, 38,
+            26, 33, 53
     );
 
     var maxIndexForLoop = 8 * 3;

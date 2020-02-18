@@ -8,12 +8,12 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 public class SessionRestController {
-    private static final Logger logger = LoggerFactory.getLogger(SessionRestController.class);
+  private static final Logger logger = LoggerFactory.getLogger(SessionRestController.class);
 
-    @RequestMapping("/api/authentication")
-    public ResponseEntity<?> authenticate() {
-        logger.info("SessionRestController.authenticate");
-        return ResponseEntity.noContent().build();
-    }
+  @RequestMapping("/api/authentication")
+  public ResponseEntity<?> authenticate() {
+    logger.info("SessionRestController.authenticate");
+    return ResponseEntity.noContent().build();
+  }
 
 }
