@@ -3,7 +3,7 @@ package com.cheemcheem.experimental.rubikscubesolver.service;
 
 import com.cheemcheem.experimental.rubikscubesolver.model.Colour;
 import com.cheemcheem.experimental.rubikscubesolver.model.State;
-import lombok.Data;
+import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
@@ -12,7 +12,7 @@ import javax.transaction.Transactional;
 import java.util.List;
 import java.util.Optional;
 
-@Data
+@RequiredArgsConstructor
 @Service
 public class ValidatorService {
 

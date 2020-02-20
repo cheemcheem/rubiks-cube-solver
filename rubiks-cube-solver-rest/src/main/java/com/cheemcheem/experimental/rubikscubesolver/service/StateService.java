@@ -5,7 +5,7 @@ import com.cheemcheem.experimental.rubikscubesolver.model.State;
 import com.cheemcheem.experimental.rubikscubesolver.repository.StateRepository;
 import com.cheemcheem.experimental.rubikscubesolver.utility.StateBuilder;
 import com.cheemcheem.experimental.rubikscubesolver.utility.StateDTOBuilder;
-import lombok.Data;
+import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
@@ -13,7 +13,7 @@ import org.springframework.stereotype.Service;
 import javax.transaction.Transactional;
 import java.util.Optional;
 
-@Data
+@RequiredArgsConstructor
 @Service
 public class StateService {
 
@@ -98,5 +98,11 @@ public class StateService {
 
     logger.debug("Could not find state with id '{}'.", stateId);
     return false;
+  }
+
+  public void saveExistingState(State state) {
+    logger.info("StateService.saveState");
+    logger.info("Saving state '{}'", state);
+    this.stateRepository.save(state);
   }
 }

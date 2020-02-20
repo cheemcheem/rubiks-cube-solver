@@ -1,7 +1,9 @@
 package com.cheemcheem.experimental.rubikscubesolver.controller;
 
 import com.cheemcheem.experimental.rubikscubesolver.model.Move;
+import com.cheemcheem.experimental.rubikscubesolver.service.MoveService;
 import com.cheemcheem.experimental.rubikscubesolver.utility.Constants;
+import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.ResponseEntity;
@@ -12,10 +14,12 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 @RequestMapping("/api/move")
+@RequiredArgsConstructor
 @RestController
 public class MoveRestController {
   private static final Logger logger = LoggerFactory.getLogger(MoveRestController.class);
 
+  private final MoveService moveService;
   /**
    * Allows a user to make a move on their Rubik's cube.
    *
@@ -26,11 +30,13 @@ public class MoveRestController {
   @PutMapping("/{move}")
   public ResponseEntity<?> makeMove(
           @RequestAttribute(Constants.STATE_ATTRIBUTE_KEY) Long stateId,
-          @PathVariable Move move
+          @PathVariable("move") Move move
   ) {
     logger.info("MoveRestController.makeMove");
     logger.info("Making move '{}' on state '{}'.", move, stateId);
-
+    moveService.makeMove(move, stateId);
+    logger.info("Made move.");
     return ResponseEntity.noContent().build();
   }
 }
+

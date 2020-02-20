@@ -1,9 +1,9 @@
 package com.cheemcheem.experimental.rubikscubesolver.service;
 
-import lombok.Data;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
-@Data
+@RequiredArgsConstructor
 @Service
 public class SolverService {
 

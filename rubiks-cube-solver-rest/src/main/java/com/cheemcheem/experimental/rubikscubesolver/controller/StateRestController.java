@@ -3,7 +3,7 @@ package com.cheemcheem.experimental.rubikscubesolver.controller;
 import com.cheemcheem.experimental.rubikscubesolver.dto.StateDTO;
 import com.cheemcheem.experimental.rubikscubesolver.service.StateService;
 import com.cheemcheem.experimental.rubikscubesolver.utility.Constants;
-import lombok.Data;
+import lombok.RequiredArgsConstructor;
 import org.apache.commons.validator.routines.LongValidator;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -17,8 +17,8 @@ import org.springframework.web.bind.annotation.RestController;
 import javax.servlet.http.HttpSession;
 import java.net.URI;
 
-@Data
 @RestController
+@RequiredArgsConstructor
 @RequestMapping("/api/state")
 public class StateRestController {
 
@@ -27,15 +27,15 @@ public class StateRestController {
 
 
   @GetMapping("/get")
-  public ResponseEntity<StateDTO> getStateForSession(@RequestAttribute(Constants.STATE_ATTRIBUTE_KEY) Long stateIdLong) {
+  public ResponseEntity<StateDTO> getStateForSession(@RequestAttribute(Constants.STATE_ATTRIBUTE_KEY) Long stateId) {
     logger.info("StateRestController.getStateById");
 
-    var optionalState = stateService.getStateDTOById(stateIdLong);
+    var optionalState = stateService.getStateDTOById(stateId);
     if (logger.isDebugEnabled()) {
       if (optionalState.isPresent()) {
-        logger.debug("State found '{}' for id '{}'.", optionalState, stateIdLong);
+        logger.debug("State found '{}' for id '{}'.", optionalState, stateId);
       } else {
-        logger.debug("State not found for id '{}'.", stateIdLong);
+        logger.debug("State not found for id '{}'.", stateId);
       }
     }
 
