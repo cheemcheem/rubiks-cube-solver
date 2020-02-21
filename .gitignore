@@ -170,3 +170,4 @@ buildNumber.properties
 # End of https://www.gitignore.io/api/java,macos,maven,intellij+all,visualstudiocode
 # Project exclude paths
 /rubiks-cube-solver-web/node_modules/
+!.idea/
