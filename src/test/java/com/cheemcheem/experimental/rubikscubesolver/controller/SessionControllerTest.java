@@ -7,12 +7,12 @@ import org.springframework.boot.test.web.client.TestRestTemplate;
 class SessionControllerTest {
 
   private Jedis jedis;
-  private TestRestTemplate testRestTemplate;
-  private TestRestTemplate testRestTemplateWithAuth;
+  private static TestRestTemplate testRestTemplate;
+  private static TestRestTemplate testRestTemplateWithAuth;
   private String testUrl = "http://localhost:8080/";
 
   @BeforeAll
-  public void clearRedisData() {
+  public static void clearRedisData() {
     testRestTemplate = new TestRestTemplate();
     testRestTemplateWithAuth = new TestRestTemplate("admin", "password", null);
 
