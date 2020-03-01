@@ -9,5 +9,11 @@
     <beans profile="dev">
 
     </beans>
+    <beans profile="debug">
+
+    </beans>
+    <beans profile="prod">
+
+    </beans>
 
 </beans>

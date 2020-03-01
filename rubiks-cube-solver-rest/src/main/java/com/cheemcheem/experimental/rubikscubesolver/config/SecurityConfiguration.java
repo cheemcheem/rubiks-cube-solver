@@ -7,7 +7,6 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.web.csrf.CookieCsrfTokenRepository;
-import org.springframework.security.web.savedrequest.NullRequestCache;
 
 
 @Configuration
@@ -30,20 +29,8 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
         .csrf()
           .csrfTokenRepository(CookieCsrfTokenRepository.withHttpOnlyFalse())
           .and()
-        .exceptionHandling()
-          .and()
-        .authorizeRequests()
-          .antMatchers("/").hasRole("USER")
-          .anyRequest()
-          .authenticated()
-          .and()
-        .requestCache()
-            .requestCache(new NullRequestCache()) // stop auto redirect after auth
-            .and()
-        .formLogin()
-          .loginProcessingUrl("/api/authentication")
-          .and()
-        .httpBasic();
+        .cors()
+    ;
     //@formatter:on
   }
 }
