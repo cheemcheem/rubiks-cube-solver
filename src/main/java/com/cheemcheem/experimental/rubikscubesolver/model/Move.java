@@ -6,13 +6,13 @@ package com.cheemcheem.experimental.rubikscubesolver.model;
  * <ol>
  * <li>
  * The first descriptor (X,Y,Z) indicates axis of movement. For example, X indicates that a slice of the cube will be rotating around the x-axis.
- * </li>
- * <li>
- * The second descriptor (LEFT,RIGHT,TOP,BOTTOM,NEAR,FAR,MIDDLE) indicates which slice will be rotated around the chosen axis. For example, X_LEFT indicates that the left face of the cube will be rotating.
- * </li>
- * <li>
- * The third descriptor (UP,DOWN,RIGHT,LEFT,CLOCKWISE,ANTICLOCKWISE) indicates which direction the slice of the cube will be pivoting. For example, X_LEFT_UP indicates that the left face of the cube will be rotating upwards from the perspective of looking at the front face.
- * </li>
+ *  * </li>
+ *  * <li>
+ *  * The second descriptor (LEFT,RIGHT,TOP,BOTTOM,NEAR,FAR,MIDDLE) indicates which slice will be rotated around the chosen axis. For example, X_LEFT indicates that the left face of the cube will be rotating.
+ *  * </li>
+ *  * <li>
+ *  * The third descriptor (UP,DOWN,RIGHT,LEFT,CLOCKWISE,ANTICLOCKWISE) indicates which direction the slice of the cube will be pivoting. For example, X_LEFT_UP indicates that the left face of the cube will be rotating upwards from the perspective of looking at the front face.
+ *  * </li>
  * </ol>
  *
  * @see State#getColours()

@@ -13,7 +13,6 @@ import java.util.concurrent.ConcurrentHashMap;
 @Profile("dev")
 @Configuration
 public class SessionConfiguration {
-
   @Bean
   public MapSessionRepository sessionRepository() {
     return new MapSessionRepository(new ConcurrentHashMap<>());

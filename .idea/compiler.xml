@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="CompilerConfiguration">
+    <annotationProcessing>
+      <profile default="true" name="Default" enabled="true" />
+      <profile name="Maven default annotation processors profile" enabled="true">
+        <sourceOutputDir name="target/generated-sources/annotations" />
+        <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
+        <outputRelativeToContentRoot value="true" />
+        <module name="rubiks-cube-solver-web" />
+      </profile>
+      <profile name="Annotation profile for rubiks-cube-solver-rest" enabled="true">
+        <sourceOutputDir name="target/generated-sources/annotations" />
+        <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
+        <outputRelativeToContentRoot value="true" />
+        <processorPath useClasspath="false">
+          <entry name="$MAVEN_REPOSITORY$/org/projectlombok/lombok/1.18.10/lombok-1.18.10.jar" />
+        </processorPath>
+        <module name="rubiks-cube-solver" />
+      </profile>
+    </annotationProcessing>
+    <bytecodeTargetLevel target="13">
+      <module name="rubiks-cube-solver-parent" target="13" />
+      <module name="rubiks-cube-solver-rest" target="13" />
+      <module name="rubiks-cube-solver-web" target="13" />
+    </bytecodeTargetLevel>
+  </component>
+  <component name="JavacSettings">
+    <option name="ADDITIONAL_OPTIONS_OVERRIDE">
+      <module name="rubiks-cube-solver" options="-parameters" />
+      <module name="rubiks-cube-solver-parent" options="-parameters" />
+      <module name="rubiks-cube-solver-rest" options="-parameters" />
+      <module name="rubiks-cube-solver-web" options="-parameters" />
+    </option>
+  </component>
+  <component name="TypeScriptCompiler">
+    <option name="recompileOnChanges" value="true" />
+  </component>
+</project>

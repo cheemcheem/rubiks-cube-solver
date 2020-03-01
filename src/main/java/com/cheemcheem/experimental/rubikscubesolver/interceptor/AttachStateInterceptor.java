@@ -4,7 +4,6 @@ import com.cheemcheem.experimental.rubikscubesolver.utility.Constants;
 import org.apache.commons.validator.routines.LongValidator;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.stereotype.Component;
 import org.springframework.web.servlet.HandlerInterceptor;
 
 import javax.servlet.http.HttpServletRequest;
@@ -12,19 +11,22 @@ import javax.servlet.http.HttpServletResponse;
 import java.util.function.Predicate;
 import java.util.regex.Pattern;
 
-@Component
-public class StateCreatedInterceptor implements HandlerInterceptor {
-  private static final Logger logger = LoggerFactory.getLogger(StateCreatedInterceptor.class);
-  private final Predicate<String> excludedPaths = Pattern.compile("(/api/state/new)|(/api/authentication)").asMatchPredicate();
+
+public class AttachStateInterceptor implements HandlerInterceptor {
+  private static final Logger logger = LoggerFactory.getLogger(AttachStateInterceptor.class);
+  private static final Predicate<String> excludedPaths
+          = Pattern.compile("(/api/state(?!/new)(/.*)*)|(/api/move(/.*)*)").asMatchPredicate().negate();
 
   @Override
   public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) {
-    logger.info("StateCreatedInterceptor.preHandle");
-    logger.debug("Path '{}'", request.getServletPath());
+    logger.info("AttachStateInterceptor.preHandle");
+
     if (excludedPaths.test(request.getServletPath())) {
-      logger.info("Path does not require state, proceeding.");
+      logger.debug("Path '{}' does not require state, proceeding.", request.getServletPath());
       return true;
     }
+
+    logger.debug("Path '{}' requires state.'", request.getServletPath());
 
     var session = request.getSession();
     var stateId = session.getAttribute(Constants.STATE_SESSION_KEY);

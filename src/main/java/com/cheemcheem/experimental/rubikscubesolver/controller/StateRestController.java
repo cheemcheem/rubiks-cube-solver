@@ -25,7 +25,6 @@ public class StateRestController {
   private static final Logger logger = LoggerFactory.getLogger(StateRestController.class);
   private final StateService stateService;
 
-
   @GetMapping("/get")
   public ResponseEntity<StateDTO> getStateForSession(@RequestAttribute(Constants.STATE_ATTRIBUTE_KEY) Long stateId) {
     logger.info("StateRestController.getStateById");
