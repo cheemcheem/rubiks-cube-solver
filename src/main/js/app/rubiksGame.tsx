@@ -2,136 +2,33 @@ import * as React from 'react';
 import RubiksScene, {SceneEventArgs} from './rubiksScene';
 import {Scene} from "babylonjs/scene";
 import {ArcRotateCamera, Color3, Mesh, PointLight, Space, StandardMaterial, Vector3} from 'babylonjs';
-import * as Cookie from "js-cookie";
-import {AUTH_URL, GET_URL, MOVE_URL, MOVES, NEW_URL} from "./constants";
+import {LogLevel, transparentLog} from "./utilities/logging";
+import {
+    convertResponse,
+    createCubeIfNeededRequest,
+    fetchCubeRequest,
+    logInRequest,
+    XLEFTUPRequest
+} from "./utilities/communication";
+import {localColours} from "./utilities/colour";
+import {NO_ROTATION, X_ROTATION, Y_ROTATION, Z_ROTATION} from "./utilities/rotation";
 
 export default class RubiksGame extends React.Component<{}, {}> {
-    private readonly RED = Color3.Red().scale(0.7);
-    private readonly GREEN = Color3.Green().scale(0.5);
-    private readonly BLUE = Color3.Blue().scale(0.5);
-    private readonly WHITE = Color3.White().scale(0.9);
-    private readonly ORANGE = Color3.Lerp(Color3.Red(), Color3.Yellow(), 0.5).scale(0.9);
-    private readonly YELLOW = Color3.Yellow().scale(0.9);
-    private readonly COLOUR_MAP = new Map([["RED", this.RED], ["GREEN", this.GREEN], ["BLUE", this.BLUE], ["WHITE", this.WHITE], ["ORANGE", this.ORANGE], ["YELLOW", this.YELLOW]]);
 
-    private readonly NO_ROTATION = new Vector3(0, 0, 0);
-    private readonly X_ROTATION = new Vector3(1, 0, 0);
-    private readonly Y_ROTATION = new Vector3(0, 1, 0);
-    private readonly Z_ROTATION = new Vector3(0, 0, 1);
-    fetchX = (input: RequestInfo, init?: RequestInit) => {
-        const xsrfCookie = this.getXSRFHeader();
-        return fetch(input, {...init, ...xsrfCookie});
-    };
-
-    getXSRFHeader() {
-        return {headers: {"X-XSRF-TOKEN": String(Cookie.get("XSRF-TOKEN"))}};
-    }
-
-    authenticateAndGetCube() {
-        const transparentLog = <U extends any>(x: U) => {
-            console.debug(x);
-            return x
-        };
-        const createIfNotExist = (response: Response) => {
-            if (response.status === 404) {
-                return this.fetchX(NEW_URL, {method: "POST"})
-                    .then(transparentLog)
-                    .then(() => this.fetchX(GET_URL))
-                    .then(response => {
-                        if (response.status === 404) {
-                            console.debug(response);
-                            throw new Error("Failed to create a new cube.");
-                        }
-                        return response;
-                    })
-            } else {
-                return response;
-            }
-        };
-
-        const stringToColour = (value: string) => {
-            const lookup = this.COLOUR_MAP.get(value);
-            if (lookup === undefined) {
-                throw new Error(`Could not find string '${value}' in the colour mappings '${this.COLOUR_MAP}'`);
-            }
-            return lookup;
-        };
-
-        return this.fetchX(AUTH_URL)
-            .then(transparentLog)
-            .then(() => this.fetchX(GET_URL))
-            .then(createIfNotExist)
-            .then(transparentLog)
-            .then(() => this.fetchX(MOVE_URL + MOVES.X.LEFT.UP, {method: "PUT"}))
-            .then(() => this.fetchX(GET_URL))
-            .then(createIfNotExist)
-            .then(response => response.text())
-            .then(transparentLog)
-            .then(colours => Array.from<string>(JSON.parse(colours).colours).map(stringToColour))
-            .then(transparentLog)
+    private authenticateAndGetCube() {
+        return logInRequest()
+            .then(fetchCubeRequest)
+            .then(createCubeIfNeededRequest)
+            .then(XLEFTUPRequest)
+            .then(fetchCubeRequest)
+            .then(convertResponse)
             .catch(err => {
-                transparentLog(err);
-                return this.localColours;
+                transparentLog(err, LogLevel.ERROR);
+                transparentLog("Can't connect to back end, running with no saved state.", LogLevel.WARN);
+                return localColours;
             })
             ;
     }
-
-    private readonly localColours = [
-        this.ORANGE,
-        this.ORANGE,
-        this.ORANGE,
-        this.ORANGE,
-        this.ORANGE,
-        this.ORANGE,
-        this.ORANGE,
-        this.ORANGE,
-        this.ORANGE,
-        this.WHITE,
-        this.WHITE,
-        this.WHITE,
-        this.WHITE,
-        this.WHITE,
-        this.WHITE,
-        this.WHITE,
-        this.WHITE,
-        this.WHITE,
-        this.RED,
-        this.RED,
-        this.RED,
-        this.RED,
-        this.RED,
-        this.RED,
-        this.RED,
-        this.RED,
-        this.RED,
-        this.YELLOW,
-        this.YELLOW,
-        this.YELLOW,
-        this.YELLOW,
-        this.YELLOW,
-        this.YELLOW,
-        this.YELLOW,
-        this.YELLOW,
-        this.YELLOW,
-        this.BLUE,
-        this.BLUE,
-        this.BLUE,
-        this.BLUE,
-        this.BLUE,
-        this.BLUE,
-        this.BLUE,
-        this.BLUE,
-        this.BLUE,
-        this.GREEN,
-        this.GREEN,
-        this.GREEN,
-        this.GREEN,
-        this.GREEN,
-        this.GREEN,
-        this.GREEN,
-        this.GREEN,
-        this.GREEN
-    ];
 
     onSceneMount = (e: SceneEventArgs) => {
         const {canvas, scene, engine} = e;
@@ -167,15 +64,16 @@ export default class RubiksGame extends React.Component<{}, {}> {
         });
     };
 
-    setColours = (colours: Color3[], scene: any) => {
-        this.corner(colours[44], colours[11], colours[18], scene, new Vector3(1, 1, -1), this.NO_ROTATION);
-        this.corner(colours[2], colours[9], colours[42], scene, new Vector3(-1, 1, -1), this.Z_ROTATION);
-        this.corner(colours[24], colours[17], colours[47], scene, new Vector3(1, -1, -1), this.Z_ROTATION.scale(-1));
-        this.corner(colours[45], colours[15], colours[8], scene, new Vector3(-1, -1, -1), this.Z_ROTATION.scale(2));
-        this.corner(colours[38], colours[20], colours[27], scene, new Vector3(1, 1, 1), this.Y_ROTATION.scale(3));
-        this.corner(colours[36], colours[29], colours[0], scene, new Vector3(-1, 1, 1), this.Y_ROTATION.scale(2));
-        this.corner(colours[53], colours[33], colours[26], scene, new Vector3(1, -1, 1), this.X_ROTATION.scale(2));
-        this.corner(colours[35], colours[51], colours[6], scene, new Vector3(-1, -1, 1), this.Y_ROTATION.scale(2).add(this.X_ROTATION));
+    // todo extract colours, edges, centers to another class if needed
+    private setColours = (colours: Color3[], scene: any) => {
+        this.corner(colours[44], colours[11], colours[18], scene, new Vector3(1, 1, -1), NO_ROTATION);
+        this.corner(colours[2], colours[9], colours[42], scene, new Vector3(-1, 1, -1), Z_ROTATION);
+        this.corner(colours[24], colours[17], colours[47], scene, new Vector3(1, -1, -1), Z_ROTATION.scale(-1));
+        this.corner(colours[45], colours[15], colours[8], scene, new Vector3(-1, -1, -1), Z_ROTATION.scale(2));
+        this.corner(colours[38], colours[20], colours[27], scene, new Vector3(1, 1, 1), Y_ROTATION.scale(3));
+        this.corner(colours[36], colours[29], colours[0], scene, new Vector3(-1, 1, 1), Y_ROTATION.scale(2));
+        this.corner(colours[53], colours[33], colours[26], scene, new Vector3(1, -1, 1), X_ROTATION.scale(2));
+        this.corner(colours[35], colours[51], colours[6], scene, new Vector3(-1, -1, 1), Y_ROTATION.scale(2).add(X_ROTATION));
     };
 
     private corner = (colour1: Color3, colour2: Color3, colour3: Color3, scene: Scene, position: Vector3, rotationAxis: Vector3) => {
