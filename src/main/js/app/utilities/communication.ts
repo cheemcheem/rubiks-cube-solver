@@ -17,7 +17,7 @@ export const fetchCubeRequest = () => fetchX(GET_URL).then(transparentLog);
 export const XLEFTUPRequest = () => fetchX(MOVE_URL + MOVES.X.LEFT.UP, {method: "PUT"}).then(transparentLog);
 export const convertResponse = (response: Response) => response.text().then(responseText => Array.from<string>(JSON.parse(responseText).colours).map(stringToColour));
 export const createCubeIfNeededRequest = (response: Response) => {
-    return new Promise((resolve, reject) => {
+    return new Promise<Response>((resolve, reject) => {
         if (response.status !== 404) {
             return resolve(response);
         }

@@ -1,11 +1,12 @@
 import {Color3} from "babylonjs";
 
-const RED = Color3.Red().scale(0.7);
-const GREEN = Color3.Green().scale(0.5);
-const BLUE = Color3.Blue().scale(0.5);
-const WHITE = Color3.White().scale(0.9);
-const ORANGE = Color3.Lerp(Color3.Red(), Color3.Yellow(), 0.5).scale(0.9);
-const YELLOW = Color3.Yellow().scale(0.9);
+export const RED = Color3.Red().scale(0.7);
+export const GREEN = Color3.Green().scale(0.5);
+export const BLUE = Color3.Blue().scale(0.5);
+export const WHITE = Color3.White().scale(0.9);
+export const ORANGE = Color3.Lerp(Color3.Red(), Color3.Yellow(), 0.5).scale(0.9);
+export const YELLOW = Color3.Yellow().scale(0.9);
+
 const COLOUR_MAP = new Map([["RED", RED], ["GREEN", GREEN], ["BLUE", BLUE], ["WHITE", WHITE], ["ORANGE", ORANGE], ["YELLOW", YELLOW]]);
 
 export const stringToColour = (value: string) => {
