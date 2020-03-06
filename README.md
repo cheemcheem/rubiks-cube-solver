@@ -5,7 +5,7 @@
 A web app that stores a rubiks cube and lets you manipulate the rubiks cube in the browser, or optionally click a button to solve it
 
 #### What this currently is
-A web app and rest endpoint. The rest endpoint stores a rubiks cube on your session and lets you make a single type of move on the rubiks cube via a rest call. The web app will also display the corners of the rubiks cube in the browser where the move will be executed upon refresh. 
+A web app and rest endpoint. The rest endpoint stores a rubiks cube on your session and lets you make a single type of move on the rubiks cube via a rest call. The web app will also display the rubiks cube in the browser where the move will be executed upon refresh. 
 
 #### How this works
 1. User browses to home page

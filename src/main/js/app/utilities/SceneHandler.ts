@@ -3,6 +3,7 @@ import {NO_ROTATION, X_ROTATION, Y_ROTATION, Z_ROTATION} from "./rotation";
 import {Scene} from "babylonjs/scene";
 import {GREEN, YELLOW} from "./colour";
 import {Engine} from "babylonjs/Engines/engine";
+import {SceneEventArgs} from "../rubiksScene";
 
 export class SceneHandler {
 
@@ -10,7 +11,8 @@ export class SceneHandler {
     private readonly scene: Scene;
     private readonly engine: Engine;
 
-    constructor(canvas: HTMLCanvasElement, scene: Scene, engine: Engine) {
+    constructor(sceneEventArgs: SceneEventArgs) {
+        const {canvas, scene, engine} = sceneEventArgs;
         this.canvas = canvas;
         this.scene = scene;
         this.engine = engine;
@@ -141,36 +143,35 @@ export class SceneHandler {
     };
 
     private face = (id: any, scene: Scene, colour: Color3) => {
-        const face1 = Mesh.CreatePlane(`corner${String(id)}`, 1, scene);
-        const material1 = new StandardMaterial(`material${String(id)}`, scene);
-        material1.diffuseColor = new Color3(0.4, 0.4, 0.4);
-        material1.specularColor = new Color3(0.7, 0.7, 0.7);
-        material1.emissiveColor = colour;
-        face1.enableEdgesRendering();
-        face1.edgesWidth = 2.0;
-        face1.edgesColor = Color4.FromColor3(Color3.Black());
-        face1.material = material1;
-        return face1;
+
+        const faceMaterial = new StandardMaterial(`material${String(id)}`, scene);
+        faceMaterial.diffuseColor = new Color3(0.4, 0.4, 0.4);
+        faceMaterial.specularColor = new Color3(0.7, 0.7, 0.7);
+        faceMaterial.emissiveColor = colour;
+
+        const face = Mesh.CreatePlane(`corner${String(id)}`, 1, scene);
+        face.enableEdgesRendering();
+        face.edgesWidth = 2.0;
+        face.edgesColor = Color4.FromColor3(Color3.Black());
+        face.material = faceMaterial;
+
+        return face;
     };
 
     private createCamera = () => {
-        // scene.clearColor = new Color4(100, 100, 100);
-
-        // This creates and positions a free camera (non-mesh)
         const camera = new ArcRotateCamera("Camera", 0, -50, 10, new Vector3(0, 5, -10), this.scene!);
 
-        // This targets the camera to scene origin
         camera.setTarget(Vector3.Zero());
 
-        // This attaches the camera to the canvas
+        camera.upperRadiusLimit = 20;
+        camera.lowerRadiusLimit = 10;
+
         camera.attachControl(this.canvas!, true);
     };
 
     private createLight = () => {
-        // This creates a light, aiming 0,1,0 - to the sky (non-mesh)
         const light = new PointLight("light", new Vector3(5, 5, -5), this.scene!);
 
-        // Default intensity is 1. Let's dim the light a small amount
         light.intensity = 1;
     };
 
@@ -186,15 +187,18 @@ export class SceneHandler {
     };
 
     private createGround = () => {
-        const ground = Mesh.CreateTiledGround("ground", -60, -60, 60, 60, {w: 30, h: 30}, {w: 1, h: 1}, this.scene!);
+
         const groundMaterial = new StandardMaterial(`material-ground`, this.scene!);
         groundMaterial.diffuseColor = new Color3(0.4, 0.5, 0.4);
         groundMaterial.specularColor = new Color3(0.1, 0.1, 0.1);
         groundMaterial.emissiveColor = GREEN;
+
+        const ground = Mesh.CreateTiledGround("ground", -60, -60, 60, 60, {w: 30, h: 30}, {w: 1, h: 1}, this.scene!);
         ground.enableEdgesRendering();
         ground.edgesWidth = 8.0;
         ground.edgesColor = Color4.FromColor3(Color3.Black());
         ground.material = groundMaterial;
+
         ground.position = new Vector3(0, -10, 0);
     };
 }

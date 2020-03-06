@@ -2,8 +2,8 @@ const path = require('path');
 
 module.exports = {
     entry: path.join(__dirname, 'src/main/js/index.tsx'),
-    devtool: 'sourcemaps',
-    cache: true,
+    devtool: 'inline-source-map',
+    cache: false,
     mode: 'development',
     output: {
         path: path.join(__dirname, 'target/classes/static/built/'),
