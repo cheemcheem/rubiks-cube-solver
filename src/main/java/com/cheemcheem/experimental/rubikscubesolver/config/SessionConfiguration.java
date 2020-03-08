@@ -10,7 +10,7 @@ import org.springframework.session.config.annotation.web.http.EnableSpringHttpSe
 import java.util.concurrent.ConcurrentHashMap;
 
 @EnableSpringHttpSession
-@Profile("dev")
+@Profile({"!prod"})
 @Configuration
 public class SessionConfiguration {
   @Bean

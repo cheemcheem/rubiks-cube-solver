@@ -102,7 +102,8 @@ public class StateService {
 
   public void saveExistingState(State state) {
     logger.info("StateService.saveState");
-    logger.info("Saving state '{}'", state);
+    logger.info("Saving state with id '{}'", state.getId());
+    logger.debug("Saving state '{}'", state);
     this.stateRepository.save(state);
   }
 }

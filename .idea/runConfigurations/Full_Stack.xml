@@ -1,6 +1,6 @@
 <component name="ProjectRunConfigurationManager">
   <configuration default="false" name="Full Stack" type="CompoundRunConfigurationType">
-    <toRun name="start" type="js.build_tools.npm" />
+    <toRun name="watch" type="js.build_tools.npm" />
     <toRun name="Application" type="SpringBootApplicationConfigurationType" />
     <method v="2" />
   </configuration>
