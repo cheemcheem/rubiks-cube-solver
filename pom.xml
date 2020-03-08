@@ -6,16 +6,7 @@
     <build>
         <plugins>
             <plugin>
-                <!--   mvn spring-boot:run -Dspring-boot.run.profiles=dev   -->
                 <artifactId>spring-boot-maven-plugin</artifactId>
-                <configuration>
-                    <profiles>
-                        <profile>dev</profile>
-                        <profile>demo</profile>
-                        <profile>prod</profile>
-                        <profile>debug</profile>
-                    </profiles>
-                </configuration>
                 <groupId>org.springframework.boot</groupId>
             </plugin>
             <plugin>
@@ -38,6 +29,22 @@
                 <artifactId>maven-surefire-plugin</artifactId>
                 <groupId>org.apache.maven.plugins</groupId>
                 <version>3.0.0-M4</version>
+                <configuration>
+                    <includes>
+                        <include>**/*Test*.java</include>
+                    </includes>
+                    <argLine>--add-opens java.base/jdk.internal.misc=ALL-UNNAMED
+                        -Dio.netty.tryReflectionSetAccessible=true
+                    </argLine>
+                </configuration>
+                <executions>
+                    <execution>
+                        <phase>clean</phase>
+                        <goals>
+                            <goal>test</goal>
+                        </goals>
+                    </execution>
+                </executions>
             </plugin>
             <plugin>
                 <groupId>com.github.eirslett</groupId>
@@ -144,15 +151,9 @@
             <groupId>org.springframework.boot</groupId>
         </dependency>
         <dependency>
-            <groupId>commons-validator</groupId>
-            <artifactId>commons-validator</artifactId>
-            <version>1.6</version>
-            <exclusions>
-                <exclusion>
-                    <groupId>commons-logging</groupId>
-                    <artifactId>commons-logging</artifactId>
-                </exclusion>
-            </exclusions>
+            <groupId>org.apache.commons</groupId>
+            <artifactId>commons-lang3</artifactId>
+            <version>3.9</version>
         </dependency>
     </dependencies>
 
@@ -167,6 +168,38 @@
         <relativePath/>
         <version>2.2.4.RELEASE</version> <!-- lookup parent from repository -->
     </parent>
+
+    <profiles>
+        <profile>
+            <id>no-frontend</id>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>com.github.eirslett</groupId>
+                        <artifactId>frontend-maven-plugin</artifactId>
+                        <version>1.9.1</version>
+                        <configuration>
+                            <installDirectory>target</installDirectory>
+                        </configuration>
+                        <executions>
+                            <execution>
+                                <id>install node and npm</id>
+                                <phase>none</phase>
+                            </execution>
+                            <execution>
+                                <id>npm install</id>
+                                <phase>none</phase>
+                            </execution>
+                            <execution>
+                                <id>webpack build</id>
+                                <phase>none</phase>
+                            </execution>
+                        </executions>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+    </profiles>
 
     <properties>
         <lombok.version>1.18.10</lombok.version>

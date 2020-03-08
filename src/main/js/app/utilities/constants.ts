@@ -1,7 +1,7 @@
-export const AUTH_URL = "http://localhost:8080/api/authentication";
-export const NEW_URL = "http://localhost:8080/api/state/new";
-export const GET_URL = "http://localhost:8080/api/state/get";
-export const MOVE_URL = "http://localhost:8080/api/move/";
+export const AUTH_URL = "/api/authentication";
+export const NEW_URL = "/api/state/new";
+export const GET_URL = "/api/state/get";
+export const MOVE_URL = "/api/move/";
 export const MOVES = {
     X: {
         LEFT: {

@@ -1,21 +1,17 @@
 package com.cheemcheem.experimental.rubikscubesolver.controller;
 
-import org.junit.jupiter.api.BeforeAll;
-import org.springframework.boot.autoconfigure.data.redis.RedisProperties.Jedis;
-import org.springframework.boot.test.web.client.TestRestTemplate;
+import com.cheemcheem.experimental.rubikscubesolver.Application;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.context.junit.jupiter.SpringExtension;
 
-class SessionControllerTest {
 
-  private Jedis jedis;
-  private static TestRestTemplate testRestTemplate;
-  private static TestRestTemplate testRestTemplateWithAuth;
-  private String testUrl = "http://localhost:8080/";
+@ExtendWith(SpringExtension.class)
+@ContextConfiguration(classes = Application.class)
+public class SessionControllerTest {
+  @Test
+  public void contextLoads() {
 
-  @BeforeAll
-  public static void clearRedisData() {
-    testRestTemplate = new TestRestTemplate();
-    testRestTemplateWithAuth = new TestRestTemplate("admin", "password", null);
-
-//    jedis =
   }
 }

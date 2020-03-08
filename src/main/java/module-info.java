@@ -1,5 +1,4 @@
 module rubiks.cube.solver {
-  requires commons.validator;
   requires com.fasterxml.classmate;
   requires com.fasterxml.jackson.core;
   requires com.fasterxml.jackson.databind;
@@ -7,6 +6,7 @@ module rubiks.cube.solver {
   requires java.sql;
   requires java.transaction;
   requires net.bytebuddy;
+  requires org.apache.commons.lang3;
   requires org.apache.tomcat.embed.core;
   requires org.slf4j;
   requires spring.beans;
@@ -24,7 +24,7 @@ module rubiks.cube.solver {
 
   requires static lombok;
 
-  opens com.cheemcheem.experimental.rubikscubesolver to spring.core, spring.beans, spring.context;
+  opens com.cheemcheem.experimental.rubikscubesolver;
   opens com.cheemcheem.experimental.rubikscubesolver.config to spring.core, spring.beans, spring.context;
   opens com.cheemcheem.experimental.rubikscubesolver.controller to spring.beans, spring.web;
   opens com.cheemcheem.experimental.rubikscubesolver.dto to com.fasterxml.jackson.databind;
@@ -33,5 +33,7 @@ module rubiks.cube.solver {
   opens com.cheemcheem.experimental.rubikscubesolver.repository to spring.beans, spring.core;
   opens com.cheemcheem.experimental.rubikscubesolver.service to spring.core, spring.beans;
   opens com.cheemcheem.experimental.rubikscubesolver.utility to spring.beans;
+
+  exports com.cheemcheem.experimental.rubikscubesolver;
 
 }
