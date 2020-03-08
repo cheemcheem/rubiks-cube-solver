@@ -1,7 +1,7 @@
 package com.cheemcheem.experimental.rubikscubesolver.interceptor;
 
 import com.cheemcheem.experimental.rubikscubesolver.utility.Constants;
-import org.apache.commons.validator.routines.LongValidator;
+import org.apache.commons.lang3.math.NumberUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.web.servlet.HandlerInterceptor;
@@ -40,8 +40,8 @@ public class AttachStateInterceptor implements HandlerInterceptor {
     }
 
     var stateIdString = stateId.toString();
-    var stateIdLong = LongValidator.getInstance().validate(stateIdString);
-    if (stateIdLong == null) {
+    var stateIdLong = NumberUtils.toLong(stateIdString, -1L);
+    if (stateIdLong == -1L) {
       logger.warn("Interceptor failed. State id in session is not a valid Long '{}'.", stateIdString);
       response.setStatus(404);
       return false;

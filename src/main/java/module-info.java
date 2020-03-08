@@ -1,5 +1,4 @@
 module rubiks.cube.solver {
-  requires commons.validator;
   requires com.fasterxml.classmate;
   requires com.fasterxml.jackson.core;
   requires com.fasterxml.jackson.databind;
@@ -7,6 +6,7 @@ module rubiks.cube.solver {
   requires java.sql;
   requires java.transaction;
   requires net.bytebuddy;
+  requires org.apache.commons.lang3;
   requires org.apache.tomcat.embed.core;
   requires org.slf4j;
   requires spring.beans;
