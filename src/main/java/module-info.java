@@ -31,7 +31,7 @@ module rubiks.cube.solver {
   opens com.cheemcheem.experimental.rubikscubesolver.interceptor to spring.beans;
   opens com.cheemcheem.experimental.rubikscubesolver.model to spring.core, spring.beans, spring.data.jpa, org.hibernate.orm.core;
   opens com.cheemcheem.experimental.rubikscubesolver.repository to spring.beans, spring.core;
-  opens com.cheemcheem.experimental.rubikscubesolver.service to spring.core, spring.beans;
+  opens com.cheemcheem.experimental.rubikscubesolver.service;
   opens com.cheemcheem.experimental.rubikscubesolver.utility to spring.beans;
 
   exports com.cheemcheem.experimental.rubikscubesolver;

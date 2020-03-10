@@ -1,21 +1,26 @@
 import {ArcRotateCamera, Color3, Color4, Mesh, PointLight, Space, StandardMaterial, Vector3} from "babylonjs";
+import {AdvancedDynamicTexture, StackPanel} from "babylonjs-gui"
 import {NO_ROTATION, X_ROTATION, Y_ROTATION, Z_ROTATION} from "./rotation";
 import {Scene} from "babylonjs/scene";
 import {GREEN, YELLOW} from "./colour";
 import {Engine} from "babylonjs/Engines/engine";
 import {SceneEventArgs} from "../rubiksScene";
+import {Communication} from "./Communication";
+import {transparentLog} from "./logging";
 
 export class SceneHandler {
 
     private readonly canvas: HTMLCanvasElement;
     private readonly scene: Scene;
     private readonly engine: Engine;
+    private communication: Communication;
 
     constructor(sceneEventArgs: SceneEventArgs) {
         const {canvas, scene, engine} = sceneEventArgs;
         this.canvas = canvas;
         this.scene = scene;
         this.engine = engine;
+        this.communication = new Communication();
     }
 
     // todo extract colours, edges, centers to another class if needed
@@ -57,14 +62,50 @@ export class SceneHandler {
         this.createLight();
         this.createLightObj();
         this.createGround();
+        try {
+            this.addGUIElement();
+        } catch (e) {
+            transparentLog(e);
+            transparentLog(e.stackTrace);
+        }
     };
 
     public startEngine = () => {
-        this.engine!.runRenderLoop(() => {
-            if (this.scene) {
-                this.scene!.render();
-            }
-        });
+        this.engine.runRenderLoop(() => this.scene ? this.scene.render() : null);
+        this.communication.authenticateAndGetCube().then(this.setColours);
+    };
+
+    private addGUIElement = () => {
+        transparentLog(this.scene.getEngine());
+        const advancedTexture = AdvancedDynamicTexture.CreateFullscreenUI("help", undefined, this.scene);
+
+        const panel = new StackPanel();
+        advancedTexture.addControl(panel);
+
+        const addRadio = (text: string, parent: any) => {
+
+            const button = new BABYLON.GUI.RadioButton();
+            button.width = "20px";
+            button.height = "20px";
+            button.color = "white";
+            button.background = "green";
+
+            button.onIsCheckedChangedObservable.add((state) => {
+                if (state) {
+                    this.communication.makeMove(text).then(transparentLog);
+                }
+            });
+
+            const header = BABYLON.GUI.Control.AddHeader(button, text, "100px", {
+                isHorizontal: true,
+                controlFirst: true
+            });
+            header.height = "30px";
+
+            parent.addControl(header);
+        };
+
+        addRadio("X_LEFT_UP", panel);
     };
 
     private rotate = (rotationAxis: Vector3, parent: Mesh) => {
@@ -200,5 +241,6 @@ export class SceneHandler {
         ground.material = groundMaterial;
 
         ground.position = new Vector3(0, -10, 0);
+
     };
 }

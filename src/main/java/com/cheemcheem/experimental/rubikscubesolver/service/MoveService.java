@@ -113,7 +113,6 @@ public class MoveService {
   }
 
   private void xLeftUp(State state) {
-    // todo once GUI is ready, test this
     switchPlaces(state, 9, 36, 35, 45);
     switchPlaces(state, 12, 39, 32, 48);
     switchPlaces(state, 15, 42, 29, 51);
@@ -122,7 +121,11 @@ public class MoveService {
   }
 
   private void xLeftDown(State state) {
-
+    switchPlaces(state, 45, 35, 36, 9);
+    switchPlaces(state, 48, 32, 39, 12);
+    switchPlaces(state, 51, 29, 42, 15);
+    switchPlaces(state, 8, 6, 0, 2);
+    switchPlaces(state, 5, 7, 3, 2);
   }
 
   private void xMiddleUp(State state) {
