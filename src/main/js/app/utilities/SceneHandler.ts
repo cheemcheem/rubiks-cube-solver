@@ -1,5 +1,5 @@
 import {ArcRotateCamera, Color3, Color4, Mesh, PointLight, Space, StandardMaterial, Vector3} from "babylonjs";
-import {AdvancedDynamicTexture, StackPanel} from "babylonjs-gui"
+import {AdvancedDynamicTexture, Button, Control, RadioButton, StackPanel} from "babylonjs-gui"
 import {NO_ROTATION, X_ROTATION, Y_ROTATION, Z_ROTATION} from "./rotation";
 import {Scene} from "babylonjs/scene";
 import {GREEN, YELLOW} from "./colour";
@@ -77,35 +77,59 @@ export class SceneHandler {
 
     private addGUIElement = () => {
         transparentLog(this.scene.getEngine());
-        const advancedTexture = AdvancedDynamicTexture.CreateFullscreenUI("help", undefined, this.scene);
 
+        const advancedTexture = AdvancedDynamicTexture.CreateFullscreenUI("help", true, this.scene);
         const panel = new StackPanel();
+        panel.width = 1;
+        panel.height = 1;
+        panel.horizontalAlignment = Control.HORIZONTAL_ALIGNMENT_LEFT;
+        panel.verticalAlignment = Control.VERTICAL_ALIGNMENT_CENTER;
         advancedTexture.addControl(panel);
 
+        let currentMove: string | undefined = undefined;
         const addRadio = (text: string, parent: any) => {
+            const radio = new RadioButton();
+            radio.width = "20px";
+            radio.height = "20px";
+            radio.color = "white";
+            radio.background = "green";
 
-            const button = new BABYLON.GUI.RadioButton();
-            button.width = "20px";
-            button.height = "20px";
-            button.color = "white";
-            button.background = "green";
-
-            button.onIsCheckedChangedObservable.add((state) => {
+            radio.onIsCheckedChangedObservable.add((state) => {
                 if (state) {
-                    this.communication.makeMove(text).then(transparentLog);
+                    currentMove = text;
                 }
             });
 
-            const header = BABYLON.GUI.Control.AddHeader(button, text, "100px", {
+            const header = Control.AddHeader(radio, text, "150px", {
                 isHorizontal: true,
                 controlFirst: true
             });
             header.height = "30px";
 
             parent.addControl(header);
+
         };
 
         addRadio("X_LEFT_UP", panel);
+        addRadio("X_LEFT_DOWN", panel);
+
+        const button = Button.CreateSimpleButton("makeMove", "Make Move");
+        button.textBlock!.fontSize = 80;
+        button.textBlock!.width = 420;
+        button.textBlock!.height = 160;
+        button.width = "420px";
+        button.height = "160px";
+        button.scaleX = 0.25;
+        button.scaleY = 0.25;
+        button.color = "white";
+        button.background = "green";
+        button.onPointerClickObservable.add((_) => {
+            if (currentMove) {
+                this.communication.makeMove(currentMove).then(transparentLog).then(() => window.location.reload());
+            }
+        });
+
+        panel.addControl(button);
     };
 
     private rotate = (rotationAxis: Vector3, parent: Mesh) => {

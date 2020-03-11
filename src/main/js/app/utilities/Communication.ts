@@ -1,5 +1,5 @@
 import * as Cookie from "js-cookie";
-import {AUTH_URL, GET_URL, MOVE_URL, MOVES, NEW_URL} from "./constants";
+import {AUTH_URL, GET_URL, MOVE_URL, NEW_URL} from "./constants";
 import {LogLevel, transparentLog} from "./logging";
 import {localColours, stringToColour} from "./colour";
 
@@ -16,8 +16,6 @@ export class Communication {
         return this.authenticate()
             .then(this.fetchCube)
             .then(this.createCubeIfNeeded)
-            .then(this.moveRequest(MOVES.X.LEFT.UP))
-            .then(this.fetchCube)
             .then(this.convertResponse)
             .catch(err => {
                 transparentLog(err, LogLevel.ERROR);
