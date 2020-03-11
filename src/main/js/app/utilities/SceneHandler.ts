@@ -1,5 +1,5 @@
-import {ArcRotateCamera, Color3, Color4, Mesh, PointLight, Space, StandardMaterial, Vector3} from "babylonjs";
-import {AdvancedDynamicTexture, Button, Control, RadioButton, StackPanel} from "babylonjs-gui"
+import {ArcRotateCamera, Color3, Color4, HemisphericLight, Mesh, Space, StandardMaterial, Vector3} from "babylonjs";
+import {AdvancedDynamicTexture, Button, StackPanel} from "babylonjs-gui"
 import {NO_ROTATION, X_ROTATION, Y_ROTATION, Z_ROTATION} from "./rotation";
 import {Scene} from "babylonjs/scene";
 import {GREEN, YELLOW} from "./colour";
@@ -13,6 +13,7 @@ export class SceneHandler {
     private readonly canvas: HTMLCanvasElement;
     private readonly scene: Scene;
     private readonly engine: Engine;
+    private ground!: Mesh;
     private communication: Communication;
 
     constructor(sceneEventArgs: SceneEventArgs) {
@@ -80,56 +81,29 @@ export class SceneHandler {
 
         const advancedTexture = AdvancedDynamicTexture.CreateFullscreenUI("help", true, this.scene);
         const panel = new StackPanel();
-        panel.width = 1;
-        panel.height = 1;
-        panel.horizontalAlignment = Control.HORIZONTAL_ALIGNMENT_LEFT;
-        panel.verticalAlignment = Control.VERTICAL_ALIGNMENT_CENTER;
+        // panel.width = 1;
+        // panel.height = 1;
+        // panel.horizontalAlignment = Control.HORIZONTAL_ALIGNMENT_LEFT;
+        // panel.verticalAlignment = Control.VERTICAL_ALIGNMENT_CENTER;
         advancedTexture.addControl(panel);
 
-        let currentMove: string | undefined = undefined;
-        const addRadio = (text: string, parent: any) => {
-            const radio = new RadioButton();
-            radio.width = "20px";
-            radio.height = "20px";
-            radio.color = "white";
-            radio.background = "green";
-
-            radio.onIsCheckedChangedObservable.add((state) => {
-                if (state) {
-                    currentMove = text;
-                }
+        const addButton = (text: string, parent: any) => {
+            const button = Button.CreateSimpleButton(`makeMove${text}`, text);
+            button.textBlock!.fontSize = 80;
+            button.width = "600px";
+            button.height = "160px";
+            button.scaleX = 0.25;
+            button.scaleY = 0.25;
+            button.color = "white";
+            button.background = "green";
+            button.onPointerClickObservable.add((_) => {
+                this.communication.makeMove(text).then(transparentLog).then(() => window.location.reload());
             });
-
-            const header = Control.AddHeader(radio, text, "150px", {
-                isHorizontal: true,
-                controlFirst: true
-            });
-            header.height = "30px";
-
-            parent.addControl(header);
-
+            parent.addControl(button);
         };
 
-        addRadio("X_LEFT_UP", panel);
-        addRadio("X_LEFT_DOWN", panel);
-
-        const button = Button.CreateSimpleButton("makeMove", "Make Move");
-        button.textBlock!.fontSize = 80;
-        button.textBlock!.width = 420;
-        button.textBlock!.height = 160;
-        button.width = "420px";
-        button.height = "160px";
-        button.scaleX = 0.25;
-        button.scaleY = 0.25;
-        button.color = "white";
-        button.background = "green";
-        button.onPointerClickObservable.add((_) => {
-            if (currentMove) {
-                this.communication.makeMove(currentMove).then(transparentLog).then(() => window.location.reload());
-            }
-        });
-
-        panel.addControl(button);
+        addButton("X_LEFT_UP", panel);
+        addButton("X_LEFT_DOWN", panel);
     };
 
     private rotate = (rotationAxis: Vector3, parent: Mesh) => {
@@ -230,19 +204,42 @@ export class SceneHandler {
 
         camera.upperRadiusLimit = 20;
         camera.lowerRadiusLimit = 10;
-
+        camera.upperBetaLimit = 2 * Math.PI / 3;
+        camera.lowerBetaLimit = Math.PI / 3;
         camera.attachControl(this.canvas!, true);
+
+        document.cookie.split(";").filter(c => c.trim().startsWith("camera.")).forEach(c => {
+            transparentLog(c);
+            const [axis, value] = c.split("=");
+            if (axis.endsWith("alpha")) {
+                camera.alpha = Number(value);
+            }
+            if (axis.endsWith("beta")) {
+                camera.beta = Number(value);
+            }
+            if (axis.endsWith("radius")) {
+                camera.radius = Number(value);
+            }
+        });
+        camera.onViewMatrixChangedObservable.add(() => {
+            this.ground.rotation = Vector3.Up().scale(-camera.alpha);
+            document.cookie = `camera.alpha=${camera.alpha}`;
+            document.cookie = `camera.beta=${camera.beta}`;
+            document.cookie = `camera.radius=${camera.radius}`;
+        });
     };
 
     private createLight = () => {
-        const light = new PointLight("light", new Vector3(5, 5, -5), this.scene!);
+        // const light = new PointLight("light", new Vector3(5, 5, -5), this.scene!);
+        const light = new HemisphericLight("light", new Vector3(5, 5, -5), this.scene!);
 
-        light.intensity = 1;
+        light.intensity = 0.5;
     };
 
     private createLightObj = () => {
         const lightObj = Mesh.CreateSphere("lightObj", 20, 3, this.scene!);
         lightObj.position = new Vector3(7, 7, -7);
+
         const lightObjMaterial = new StandardMaterial(`material-lightObj`, this.scene!);
         lightObjMaterial.diffuseColor = new Color3(1, 1, 1);
         lightObjMaterial.specularColor = new Color3(0.1, 0.1, 0.1);
@@ -265,6 +262,8 @@ export class SceneHandler {
         ground.material = groundMaterial;
 
         ground.position = new Vector3(0, -10, 0);
+
+        this.ground = ground;
 
     };
 }
