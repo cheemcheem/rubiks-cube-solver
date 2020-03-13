@@ -5,7 +5,11 @@ export enum LogLevel {
     DEBUG
 }
 
-const displayLogLevel = LogLevel.DEBUG;
+let displayLogLevel: LogLevel = LogLevel[process.env.LOG_LEVEL as keyof typeof LogLevel];
+if (displayLogLevel === undefined) {
+    displayLogLevel = LogLevel.ERROR;
+    console.warn(`Setting default log level to ${LogLevel[displayLogLevel]}.`);
+}
 
 export const transparentLog = <U extends any>(x: U, logLevel: LogLevel = LogLevel.DEBUG) => {
     if (logLevel > displayLogLevel) {
@@ -32,3 +36,5 @@ export const transparentLog = <U extends any>(x: U, logLevel: LogLevel = LogLeve
     }
     return x
 };
+
+transparentLog(`Log level ${LogLevel[displayLogLevel]}.`);
