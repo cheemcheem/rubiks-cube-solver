@@ -15,6 +15,9 @@
     <beans profile="debug-spring">
 
     </beans>
+    <beans profile="debug-all">
+
+    </beans>
     <beans profile="prod">
 
     </beans>

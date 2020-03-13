@@ -2,6 +2,7 @@ export const AUTH_URL = "/api/authentication";
 export const NEW_URL = "/api/state/new";
 export const GET_URL = "/api/state/get";
 export const MOVE_URL = "/api/move/";
+export const SHUFFLE_UR = "/api/shuffle";
 export const MOVES = {
     X: {
         LEFT: {
