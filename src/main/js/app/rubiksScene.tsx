@@ -1,84 +1,56 @@
-import * as BABYLON from 'babylonjs';
+import {Engine, Scene} from 'react-babylonjs'
 import React from "react";
-
-export type SceneEventArgs = {
-    engine: BABYLON.Engine,
-    scene: BABYLON.Scene,
-    canvas: HTMLCanvasElement
-};
+import {Color3, Color4, Scene as s, Vector3} from "@babylonjs/core";
+import '@babylonjs/core/Rendering/edgesRenderer';
+import {Communication} from "./utilities/communication";
+import {GREEN, localColours, YELLOW} from "./utilities/colour";
+import {Cube} from "./cube";
 
 export type SceneProps = {
+    communication: Communication,
     engineOptions?: BABYLON.EngineOptions,
     adaptToDeviceRatio?: boolean,
-    onSceneMount?: (args: SceneEventArgs) => void,
     width?: number,
     height?: number
+    alpha: number,
+    beta: number,
+    radius: number,
 };
 
-export default class RubiksScene extends React.Component<SceneProps & React.HTMLAttributes<HTMLCanvasElement>, {}> {
+export type SceneState = {
+    scene: s,
+    colours: Color3[]
+}
 
-    private scene!: BABYLON.Scene;
-    private engine!: BABYLON.Engine;
-    private canvas!: HTMLCanvasElement;
+export default class RubiksScene extends React.Component<SceneProps, SceneState> {
 
-    onResizeWindow = () => {
-        if (this.engine) {
-            this.engine.resize();
-        }
-    };
-
-    componentDidMount () {
-        this.engine = new BABYLON.Engine(
-            this.canvas,
-            true,
-            this.props.engineOptions,
-            this.props.adaptToDeviceRatio
-        );
-
-        let scene = new BABYLON.Scene(this.engine);
-        this.scene = scene;
-
-        if (typeof this.props.onSceneMount === 'function') {
-            this.props.onSceneMount({
-                scene,
-                engine: this.engine,
-                canvas: this.canvas
-            });
-        } else {
-            console.error('onSceneMount function not available');
-        }
-
-        // Resize the babylon engine when the window is resized
-        window.addEventListener('resize', this.onResizeWindow);
+    componentDidMount(): void {
+        this.setState({colours: localColours});
+        this.props.communication.authenticateAndGetCube().then(colours => this.setState({colours}));
     }
 
-    componentWillUnmount () {
-        window.removeEventListener('resize', this.onResizeWindow);
-    }
-
-    onCanvasLoaded = (c : HTMLCanvasElement) => {
-        if (c !== null) {
-            this.canvas = c;
-        }
-    };
-
-    render () {
-        // 'rest' can contain additional properties that you can flow through to canvas:
-        // (id, className, etc.)
-        let { width, height, ...rest } = this.props;
-
-        let opts: any = {};
-
-        if (width !== undefined && height !== undefined) {
-            opts.width = width;
-            opts.height = height;
-        }
-
-        return (
-            <canvas id="renderCanvas"
-                {...opts}
-                ref={this.onCanvasLoaded}
-            />
-        )
-    }
+    render = () =>
+        <Engine canvasId="renderCanvas" antialias={true} engineOptions={this.props.engineOptions}
+                adaptToDeviceRatio={this.props.adaptToDeviceRatio}>
+            <Scene onSceneMount={e => this.setState({scene: e.scene})}>
+                <arcRotateCamera name={"camera"} alpha={this.props.alpha} beta={this.props.beta}
+                                 radius={this.props.radius} target={new Vector3(0, 0, 0)} upperRadiusLimit={20}
+                                 lowerRadiusLimit={10} upperBetaLimit={2 * Math.PI / 3}
+                                 lowerBetaLimit={Math.PI / 3}/>
+                <hemisphericLight name={"light"} direction={new Vector3(5, 5, -5)} intensity={0.5}/>
+                <sphere name={"sun"} segments={20} diameter={3} position={new Vector3(7, 7, -7)}>
+                    <standardMaterial name={"sun-material"} diffuseColor={new Color3(1, 1, 1)}
+                                      specularColor={new Color3(0.1, 0.1, 0.1)}
+                                      ambientColor={new Color3(1, 1, 1)} emissiveColor={YELLOW}/>
+                </sphere>
+                <tiledGround name={"ground"} onCreated={g => g.enableEdgesRendering()} edgesWidth={8.0}
+                             edgesColor={Color4.FromColor3(Color3.Black())} xmax={60} xmin={-60} zmax={60} zmin={-60}
+                             subdivisions={{w: 30, h: 30}} precision={{w: 1, h: 1}} position={new Vector3(0, -10, 0)}>
+                    <standardMaterial name={"ground-material"} diffuseColor={new Color3(0.4, 0.4, 0.4)}
+                                      specularColor={new Color3(0.1, 0.1, 0.1)}
+                                      ambientColor={new Color3(1, 1, 1)} emissiveColor={GREEN}/>
+                </tiledGround>
+                <Cube colours={this.state?.colours}/>
+            </Scene>
+        </Engine>
 }
