@@ -4,7 +4,7 @@ import com.cheemcheem.experimental.rubikscubesolver.dto.StateDTO;
 import com.cheemcheem.experimental.rubikscubesolver.service.StateService;
 import com.cheemcheem.experimental.rubikscubesolver.utility.Constants;
 import lombok.RequiredArgsConstructor;
-import org.apache.commons.validator.routines.LongValidator;
+import org.apache.commons.lang3.math.NumberUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.ResponseEntity;
@@ -51,8 +51,9 @@ public class StateRestController {
     var oldStateId = httpSession.getAttribute(Constants.STATE_SESSION_KEY);
     if (oldStateId != null) {
       logger.debug("Session '{}' contains previous state with id '{}'. Proceeding to delete previous state.", sessionId, oldStateId);
-      var oldStateIdLong = LongValidator.getInstance().validate(oldStateId.toString());
-      if (oldStateIdLong == null) {
+
+      var oldStateIdLong = NumberUtils.toLong(oldStateId.toString(), -1L);
+      if (oldStateIdLong == -1L) {
         logger.warn("Previous state id in session is not a valid Long '{}'.", oldStateId);
       }
       if (stateService.deleteState(oldStateIdLong)) {

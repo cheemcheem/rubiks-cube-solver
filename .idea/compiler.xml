@@ -14,17 +14,12 @@
       </profile>
     </annotationProcessing>
     <bytecodeTargetLevel target="13">
-      <module name="rubiks-cube-solver-parent" target="13" />
-      <module name="rubiks-cube-solver-rest" target="13" />
-      <module name="rubiks-cube-solver-web" target="13" />
+      <module name="rubiks-cube-solver" target="13" />
     </bytecodeTargetLevel>
   </component>
   <component name="JavacSettings">
     <option name="ADDITIONAL_OPTIONS_OVERRIDE">
       <module name="rubiks-cube-solver" options="-parameters" />
-      <module name="rubiks-cube-solver-parent" options="-parameters" />
-      <module name="rubiks-cube-solver-rest" options="-parameters" />
-      <module name="rubiks-cube-solver-web" options="-parameters" />
     </option>
   </component>
   <component name="TypeScriptCompiler">

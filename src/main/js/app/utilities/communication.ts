@@ -1,5 +1,5 @@
 import * as Cookie from "js-cookie";
-import {AUTH_URL, GET_URL, MOVE_URL, MOVES, NEW_URL} from "./constants";
+import {AUTH_URL, GET_URL, MOVE_URL, NEW_URL} from "./constants";
 import {LogLevel, transparentLog} from "./logging";
 import {localColours, stringToColour} from "./colour";
 
@@ -16,8 +16,6 @@ export class Communication {
         return this.authenticate()
             .then(this.fetchCube)
             .then(this.createCubeIfNeeded)
-            .then(this.moveRequest(MOVES.X.LEFT.UP))
-            .then(this.fetchCube)
             .then(this.convertResponse)
             .catch(err => {
                 transparentLog(err, LogLevel.ERROR);
@@ -27,7 +25,9 @@ export class Communication {
             ;
     };
 
-    private moveRequest = (move: String) => () => fetchX(MOVE_URL + move, {method: "PUT"}).then(transparentLog);
+    makeMove = (move: string) => fetchX(MOVE_URL + move, {method: "PUT"}).then(transparentLog);
+
+    getCube = () => this.fetchCube().then(this.convertResponse).then(transparentLog);
 
     private authenticate = () => fetchX(AUTH_URL).then(transparentLog);
 
@@ -41,6 +41,8 @@ export class Communication {
                 return resolve(response);
             }
             fetchX(NEW_URL, {method: "POST"})
+                .then(transparentLog)
+                .then(() => fetchX("/api/shuffle", {method: "PUT"}))
                 .then(transparentLog)
                 .then(this.fetchCube)
                 .then(response => {

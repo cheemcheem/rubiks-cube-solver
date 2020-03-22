@@ -1,84 +1,51 @@
-import * as BABYLON from 'babylonjs';
+import {Engine, Scene} from 'react-babylonjs'
 import React from "react";
-
-export type SceneEventArgs = {
-    engine: BABYLON.Engine,
-    scene: BABYLON.Scene,
-    canvas: HTMLCanvasElement
-};
+import {Color3} from "@babylonjs/core";
+import '@babylonjs/core/Rendering/edgesRenderer';
+import {Communication} from "./utilities/communication";
+import {localColours} from "./utilities/colour";
+import {Cube} from "./cube";
+import {Background} from "./background";
 
 export type SceneProps = {
+    communication: Communication,
     engineOptions?: BABYLON.EngineOptions,
     adaptToDeviceRatio?: boolean,
-    onSceneMount?: (args: SceneEventArgs) => void,
     width?: number,
     height?: number
+    cameraProps: { alpha: number, beta: number, radius: number }
 };
 
-export default class RubiksScene extends React.Component<SceneProps & React.HTMLAttributes<HTMLCanvasElement>, {}> {
+export type SceneState = {
+    colours: Color3[],
+    buttonsEnabled: boolean
+}
 
-    private scene!: BABYLON.Scene;
-    private engine!: BABYLON.Engine;
-    private canvas!: HTMLCanvasElement;
+export default class RubiksScene extends React.Component<SceneProps, SceneState> {
 
-    onResizeWindow = () => {
-        if (this.engine) {
-            this.engine.resize();
-        }
+    constructor(props: SceneProps) {
+        super(props);
+        this.state = {colours: localColours, buttonsEnabled: true};
+    }
+
+    componentDidMount() {
+        this.props.communication.authenticateAndGetCube().then(colours => this.setState({colours}));
+    }
+
+    makeMove = (move: string) => {
+        this.setState({buttonsEnabled: false});
+        this.props.communication.makeMove(move)
+            .then(this.props.communication.getCube)
+            .then(colours => this.setState({colours, buttonsEnabled: true}));
     };
 
-    componentDidMount () {
-        this.engine = new BABYLON.Engine(
-            this.canvas,
-            true,
-            this.props.engineOptions,
-            this.props.adaptToDeviceRatio
-        );
-
-        let scene = new BABYLON.Scene(this.engine);
-        this.scene = scene;
-
-        if (typeof this.props.onSceneMount === 'function') {
-            this.props.onSceneMount({
-                scene,
-                engine: this.engine,
-                canvas: this.canvas
-            });
-        } else {
-            console.error('onSceneMount function not available');
-        }
-
-        // Resize the babylon engine when the window is resized
-        window.addEventListener('resize', this.onResizeWindow);
-    }
-
-    componentWillUnmount () {
-        window.removeEventListener('resize', this.onResizeWindow);
-    }
-
-    onCanvasLoaded = (c : HTMLCanvasElement) => {
-        if (c !== null) {
-            this.canvas = c;
-        }
-    };
-
-    render () {
-        // 'rest' can contain additional properties that you can flow through to canvas:
-        // (id, className, etc.)
-        let { width, height, ...rest } = this.props;
-
-        let opts: any = {};
-
-        if (width !== undefined && height !== undefined) {
-            opts.width = width;
-            opts.height = height;
-        }
-
-        return (
-            <canvas id="renderCanvas"
-                {...opts}
-                ref={this.onCanvasLoaded}
-            />
-        )
-    }
+    render = () =>
+        <Engine canvasId="renderCanvas" antialias={true} engineOptions={this.props.engineOptions}
+                adaptToDeviceRatio={this.props.adaptToDeviceRatio}>
+            <Scene>
+                <Background cameraProps={this.props.cameraProps}/>
+                <Cube colours={this.state?.colours} makeMove={this.makeMove}
+                      buttonsEnabled={this.state?.buttonsEnabled}/>
+            </Scene>
+        </Engine>
 }

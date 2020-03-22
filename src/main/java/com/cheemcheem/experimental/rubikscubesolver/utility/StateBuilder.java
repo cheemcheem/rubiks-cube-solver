@@ -52,7 +52,7 @@ public class StateBuilder {
       this.colours = colours();
     }
     var state = new State();
-    state.setColours(colours);
+    state.setColours(new ArrayList<>(colours));
     return state;
   }
 }

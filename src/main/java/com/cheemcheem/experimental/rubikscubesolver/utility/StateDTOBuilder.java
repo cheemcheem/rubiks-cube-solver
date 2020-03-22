@@ -19,7 +19,7 @@ public class StateDTOBuilder {
 
   public StateDTOBuilder setState(State state) {
     logger.info("StateDTOBuilder.setState");
-    logger.info("Setting state to be '{}' ", state);
+    logger.debug("Setting state to be '{}' ", state);
     this.colours = state.getColours().stream().map(Objects::toString).collect(Collectors.toList());
     return this;
   }
