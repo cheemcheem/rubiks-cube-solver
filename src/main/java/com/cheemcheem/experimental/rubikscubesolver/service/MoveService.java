@@ -92,40 +92,56 @@ public class MoveService {
   /**
    * Switches the colour at the given indices in the state around.
    * E.g 9,10,11 would replace index 10 with 9's colour, index 11 with 10's colour, and index 9 with 11's colour.
+   * <p>
+   * Can also reverse the order using the reversed param.
    *
-   * @param state   State to get colour list from.
-   * @param indices Indices from the state.
+   * @param state    State to get colour list from.
+   * @param reversed Indicates if it should replace the colours in the reverse order.
+   * @param indices  Indices from the state.
    * @throws IndexOutOfBoundsException if any of the indices are greater than 53, or if the indices array is empty.
    */
-  private void switchPlaces(State state, int... indices) {
+  private void switchPlaces(State state, boolean reversed, int... indices) {
     var colours = state.getColours();
-    var lastColour = colours.get(indices[indices.length - 1]);
 
-    for (int i = indices.length - 1; i > 0; i--) {
-      var currentIndex = indices[i];
-      var previousColour = colours.get(indices[i - 1]);
-      colours.set(currentIndex, previousColour);
+    if (reversed) {
+      var firstColour = colours.get(indices[0]);
+
+      for (int i = 0; i < indices.length - 1; i++) {
+        var currentIndex = indices[i];
+        var nextColour = colours.get(indices[i + 1]);
+        colours.set(currentIndex, nextColour);
+      }
+      var lastIndex = indices[indices.length - 1];
+      colours.set(lastIndex, firstColour);
+    } else {
+      var lastColour = colours.get(indices[indices.length - 1]);
+
+      for (int i = indices.length - 1; i > 0; i--) {
+        var currentIndex = indices[i];
+        var previousColour = colours.get(indices[i - 1]);
+        colours.set(currentIndex, previousColour);
+      }
+      var firstIndex = indices[0];
+      colours.set(firstIndex, lastColour);
     }
 
-    var firstIndex = indices[0];
-    colours.set(firstIndex, lastColour);
 
   }
 
   private void xLeftUp(State state) {
-    switchPlaces(state, 9, 36, 35, 45);
-    switchPlaces(state, 12, 39, 32, 48);
-    switchPlaces(state, 15, 42, 29, 51);
-    switchPlaces(state, 2, 0, 6, 8);
-    switchPlaces(state, 2, 3, 7, 5);
+    switchPlaces(state, false, 9, 36, 35, 45);
+    switchPlaces(state, false, 12, 39, 32, 48);
+    switchPlaces(state, false, 15, 42, 29, 51);
+    switchPlaces(state, false, 2, 0, 6, 8);
+    switchPlaces(state, false, 2, 3, 7, 5);
   }
 
   private void xLeftDown(State state) {
-    switchPlaces(state, 45, 35, 36, 9);
-    switchPlaces(state, 48, 32, 39, 12);
-    switchPlaces(state, 51, 29, 42, 15);
-    switchPlaces(state, 8, 6, 0, 2);
-    switchPlaces(state, 5, 7, 3, 2);
+    switchPlaces(state, true, 9, 36, 35, 45);
+    switchPlaces(state, true, 12, 39, 32, 48);
+    switchPlaces(state, true, 15, 42, 29, 51);
+    switchPlaces(state, true, 2, 0, 6, 8);
+    switchPlaces(state, true, 2, 3, 7, 5);
   }
 
   private void xMiddleUp(State state) {

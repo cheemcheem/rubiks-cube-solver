@@ -1,9 +1,19 @@
 import React from "react";
-import {ArcRotateCamera, Camera, Color3, Color4, Mesh, Vector3} from "@babylonjs/core";
+import {
+    ActionManager,
+    ArcRotateCamera,
+    Camera,
+    Color3,
+    Color4,
+    ExecuteCodeAction,
+    Mesh,
+    Vector3
+} from "@babylonjs/core";
 import {GREEN, YELLOW} from "./utilities/colour";
 
 export type BackgroundProps = {
     cameraProps: { alpha: number, beta: number, radius: number },
+    resetCube: () => void
 }
 
 /**
@@ -19,7 +29,11 @@ export class Background extends React.Component<BackgroundProps, {}> {
             <sphere name={"sun"}
                     segments={20}
                     diameter={3}
-                    position={new Vector3(7, 7, -7)}>
+                    position={new Vector3(7, 7, -7)}
+                    onCreated={(s: Mesh) => {
+                        s.actionManager = new ActionManager(s.getScene());
+                        s.actionManager.registerAction(new ExecuteCodeAction(ActionManager.OnPickTrigger, this.props.resetCube));
+                    }}>
                 <standardMaterial name={"sun-material"}
                                   diffuseColor={new Color3(1, 1, 1)}
                                   specularColor={new Color3(0.1, 0.1, 0.1)}
