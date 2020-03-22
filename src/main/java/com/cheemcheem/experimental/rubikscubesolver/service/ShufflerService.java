@@ -1,11 +1,13 @@
 package com.cheemcheem.experimental.rubikscubesolver.service;
 
 import com.cheemcheem.experimental.rubikscubesolver.model.Move;
+import com.cheemcheem.experimental.rubikscubesolver.utility.MoveMaker;
 import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
+import javax.transaction.Transactional;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
@@ -17,22 +19,35 @@ public class ShufflerService {
   private final Logger logger = LoggerFactory.getLogger(ShufflerService.class);
 
   private final Random random = new Random();
-  private final MoveService moveService;
+  private final StateService stateService;
 
   /**
    * Applies random moves to the state until it is randomly shuffled.
-   * Doesn't have to be Transactional as it calls MoveService method which is Transactional itself.
    *
    * @param stateId State ID to look up in repository.
    */
+  @Transactional
   public void shuffle(Long stateId) {
     logger.info("ShufflerService.shuffle");
     var moves = randomMoves();
     logger.debug("Shuffling with moves: '{}' ", moves);
 
-    for (Move move : moves) {
-      this.moveService.makeMove(move, stateId);
+    var optionalState = this.stateService.getStateById(stateId);
+
+    if (optionalState.isEmpty()) {
+      logger.warn("State with id '{}' does not exist.", stateId);
+      return;
     }
+
+    var state = optionalState.get();
+    var moveMaker = new MoveMaker(state);
+
+    for (Move move : moves) {
+      moveMaker.makeMove(move);
+    }
+
+    logger.debug("Saving state after shuffle.");
+    this.stateService.saveExistingState(state);
   }
 
   private List<Move> randomMoves() {
