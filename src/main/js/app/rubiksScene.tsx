@@ -17,32 +17,35 @@ export type SceneProps = {
 };
 
 export type SceneState = {
-    colours: Color3[]
+    colours: Color3[],
+    buttonsEnabled: boolean
 }
 
 export default class RubiksScene extends React.Component<SceneProps, SceneState> {
 
     constructor(props: SceneProps) {
         super(props);
-        this.state = {colours: localColours};
+        this.state = {colours: localColours, buttonsEnabled: true};
     }
 
     componentDidMount() {
         this.props.communication.authenticateAndGetCube().then(colours => this.setState({colours}));
     }
 
-    makeMove(move: string) {
+    makeMove = (move: string) => {
+        this.setState({buttonsEnabled: false});
         this.props.communication.makeMove(move)
             .then(this.props.communication.getCube)
-            .then(colours => this.setState({colours}));
-    }
+            .then(colours => this.setState({colours, buttonsEnabled: true}));
+    };
 
     render = () =>
         <Engine canvasId="renderCanvas" antialias={true} engineOptions={this.props.engineOptions}
                 adaptToDeviceRatio={this.props.adaptToDeviceRatio}>
             <Scene>
                 <Background cameraProps={this.props.cameraProps}/>
-                <Cube colours={this.state?.colours} makeMove={this.makeMove}/>
+                <Cube colours={this.state?.colours} makeMove={this.makeMove}
+                      buttonsEnabled={this.state?.buttonsEnabled}/>
             </Scene>
         </Engine>
 }

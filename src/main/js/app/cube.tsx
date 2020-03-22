@@ -2,10 +2,12 @@ import React from "react";
 import {Color3, Color4, Mesh, Vector3} from "@babylonjs/core";
 import {NO_ROTATION, X_ROTATION, Y_ROTATION, Z_ROTATION} from "./utilities/rotation";
 import {Space} from "babylonjs";
+import {Button} from "@babylonjs/gui";
 
 export type CubeProps = {
     colours: Color3[],
-    makeMove: (move: string) => void
+    makeMove: (move: string) => void,
+    buttonsEnabled: boolean
 }
 
 export class Cube extends React.Component<CubeProps, {}> {
@@ -31,6 +33,10 @@ export class Cube extends React.Component<CubeProps, {}> {
         </box>
     };
 
+    render() {
+        return this.props.colours ? this.renderCube() : <></>;
+    }
+
     private static rotate = (rotationAxis: Vector3, parent: Mesh) => {
         if (rotationAxis.x) {
             parent.rotate(Vector3.Right(), rotationAxis.x * Math.PI / 2, Space.LOCAL);
@@ -51,14 +57,82 @@ export class Cube extends React.Component<CubeProps, {}> {
         </plane>
     };
 
-    render() {
-        return this.props.colours ? this.makeCube() : <></>;
-    }
+    renderCube = () => {
+        return <box name={"cube"} visibility={0}>
+            {this.renderCubeButtons()}
+            {this.renderCubeBoxes()}
+        </box>
+    };
 
-    makeCube = () => {
+    private button = (position: Vector3, symbol: string, move: string, rotation = Vector3.Zero()) => {
+        return <>
+            <plane name="dialog"
+                   size={1}
+                   position={position}
+                   rotation={rotation}>
+                <advancedDynamicTexture name="dialogTexture"
+                                        createForParentMesh={true}
+                                        hasAlpha={false}
+                                        height={1024}
+                                        width={1024}>
+                    <rectangle name={`rect-for-${move}`}
+                               height={0.5}
+                               width={0.8}
+                               thickness={20}
+                               cornerRadius={12}>
+                        <babylon-button name={`button-for-${move}`}
+                                        isEnabled={this.props.buttonsEnabled}
+                                        background={this.props.buttonsEnabled ? "green" : "grey"}
+                                        onPointerClickObservable={() => this.props.makeMove(move)}
+                                        onPointerEnterObservable={(b: Button) => b.background = this.props.buttonsEnabled ? "lightgreen" : "grey"}
+                                        onPointerOutObservable={(b: Button) => b.background = this.props.buttonsEnabled ? "green" : "grey"}>
+                            <textBlock text={symbol}
+                                       fontStyle="bold"
+                                       fontSize={300}
+                                       color={this.props.buttonsEnabled ? "white" : "darkgrey"}/>
+                        </babylon-button>
+                    </rectangle>
+                </advancedDynamicTexture>
+            </plane>
+        </>
+    };
+
+    private renderCubeButtons = () => {
+        // @formatter:off
+        const buttonFaceDistance = 2;
+        const buttonOtherDistance = 1.5;
+        const yFlip = Vector3.Backward().scale(-Math.PI/2);
+        const zFlip = yFlip.add(Vector3.Right().scale(Math.PI/2));
+        return <>
+            {this.button(new Vector3(-1,  buttonFaceDistance, -buttonOtherDistance), '\u25b2', "X_LEFT_UP")}
+            {this.button(new Vector3( 0,  buttonFaceDistance, -buttonOtherDistance), '\u25b2', "X_MIDDLE_UP")}
+            {this.button(new Vector3( 1,  buttonFaceDistance, -buttonOtherDistance), '\u25b2', "X_RIGHT_UP")}
+            {this.button(new Vector3(-1, -buttonFaceDistance, -buttonOtherDistance), '\u25bc', "X_LEFT_DOWN")}
+            {this.button(new Vector3( 0, -buttonFaceDistance, -buttonOtherDistance), '\u25bc', "X_MIDDLE_DOWN")}
+            {this.button(new Vector3( 1, -buttonFaceDistance, -buttonOtherDistance), '\u25bc', "X_MIDDLE_DOWN")}
+
+            {this.button(new Vector3(-buttonFaceDistance, -1, -buttonOtherDistance), '\u25b2', "Y_BOTTOM_LEFT",  yFlip)}
+            {this.button(new Vector3(-buttonFaceDistance,  0, -buttonOtherDistance), '\u25b2', "Y_MIDDLE_LEFT",  yFlip)}
+            {this.button(new Vector3(-buttonFaceDistance,  1, -buttonOtherDistance), '\u25b2', "Y_TOP_LEFT",     yFlip)}
+            {this.button(new Vector3( buttonFaceDistance, -1, -buttonOtherDistance), '\u25bc', "Y_BOTTOM_RIGHT", yFlip)}
+            {this.button(new Vector3( buttonFaceDistance,  0, -buttonOtherDistance), '\u25bc', "Y_MIDDLE_RIGHT", yFlip)}
+            {this.button(new Vector3( buttonFaceDistance,  1, -buttonOtherDistance), '\u25bc', "Y_TOP_RIGHT",    yFlip)}
+
+            {this.button(new Vector3(-buttonFaceDistance,  buttonOtherDistance, -1), '\u25b2', "Z_NEAR_ANTICLOCKWISE",   zFlip)}
+            {this.button(new Vector3(-buttonFaceDistance,  buttonOtherDistance,  0), '\u25b2', "Z_MIDDLE_ANTICLOCKWISE", zFlip)}
+            {this.button(new Vector3(-buttonFaceDistance,  buttonOtherDistance,  1), '\u25b2', "Z_FAR_ANTICLOCKWISE",    zFlip)}
+            {this.button(new Vector3( buttonFaceDistance,  buttonOtherDistance, -1), '\u25bc', "Z_NEAR_CLOCKWISE",       zFlip)}
+            {this.button(new Vector3( buttonFaceDistance,  buttonOtherDistance,  0), '\u25bc', "Z_MIDDLE_CLOCKWISE",     zFlip)}
+            {this.button(new Vector3( buttonFaceDistance,  buttonOtherDistance,  1), '\u25bc', "Z_FAR_CLOCKWISE",        zFlip)}
+        </>
+        //@formatter:on
+    };
+
+
+    private renderCubeBoxes = () => {
         const colours = this.props.colours;
         //@formatter:off
-        return <box name={"cube"} visibility={0}>
+        return <>
             {Cube.middle(colours[13], new Vector3( 0,  0,-1), X_ROTATION.scale(-1))}
             {Cube.middle(colours[ 4], new Vector3(-1,  0, 0), Z_ROTATION)}
             {Cube.middle(colours[31], new Vector3( 0,  0, 1), X_ROTATION)}
@@ -88,7 +162,7 @@ export class Cube extends React.Component<CubeProps, {}> {
             {Cube.corner(colours[53], colours[33], colours[26], new Vector3( 1, -1,  1), X_ROTATION.scale( 2))}
             {Cube.corner(colours[35], colours[51], colours[ 6], new Vector3(-1, -1,  1), Y_ROTATION.scale( 2).add(X_ROTATION))}
         }
-        </box>
+        </>
         //@formatter:on
     };
 }

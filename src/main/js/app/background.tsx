@@ -33,8 +33,8 @@ export class Background extends React.Component<BackgroundProps, {}> {
                              target={new Vector3(0, 0, 0)}
                              upperRadiusLimit={20}
                              lowerRadiusLimit={10}
-                             upperBetaLimit={2 * Math.PI / 3}
-                             lowerBetaLimit={Math.PI / 3}
+                             upperBetaLimit={3 * Math.PI / 4}
+                             lowerBetaLimit={Math.PI / 4}
                              onCreated={this.cameraCreated}
                              onViewMatrixChangedObservable={this.onViewMatrixChangedObservable}/>
             <hemisphericLight name={"light"}
@@ -47,7 +47,7 @@ export class Background extends React.Component<BackgroundProps, {}> {
                          xmax={60} xmin={-60} zmax={60} zmin={-60}
                          subdivisions={{w: 30, h: 30}}
                          precision={{w: 1, h: 1}}
-                         position={new Vector3(0, -10, 0)}>
+                         position={new Vector3(0, -15, 0)}>
                 <standardMaterial name={"ground-material"}
                                   diffuseColor={new Color3(0.4, 0.4, 0.4)}
                                   specularColor={new Color3(0.1, 0.1, 0.1)}
@@ -59,7 +59,7 @@ export class Background extends React.Component<BackgroundProps, {}> {
 
     private onViewMatrixChangedObservable = () => {
         if (this.ground && this.camera) {
-            this.ground.rotation = Vector3.Up().scale(-this.camera.alpha);
+            this.ground.rotation = Vector3.Up().scale(0.2 - this.camera.alpha);
         }
     };
 
