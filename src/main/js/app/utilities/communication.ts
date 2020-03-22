@@ -27,7 +27,7 @@ export class Communication {
 
     makeMove = (move: string) => fetchX(MOVE_URL + move, {method: "PUT"}).then(transparentLog);
 
-    private moveRequest = (move: String) => () => fetchX(MOVE_URL + move, {method: "PUT"}).then(transparentLog);
+    getCube = () => this.fetchCube().then(this.convertResponse).then(transparentLog);
 
     private authenticate = () => fetchX(AUTH_URL).then(transparentLog);
 

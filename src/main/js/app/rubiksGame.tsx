@@ -5,7 +5,7 @@ import {Communication} from "./utilities/communication";
 export default class RubiksGame extends React.Component<{}, {}> {
     render() {
         return (
-            <RubiksScene communication={new Communication()} alpha={0} beta={0} radius={0}/>
+            <RubiksScene communication={new Communication()} cameraProps={{alpha: 0, beta: 0, radius: 0}}/>
         )
     }
 }

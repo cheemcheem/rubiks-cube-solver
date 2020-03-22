@@ -4,25 +4,26 @@ import {NO_ROTATION, X_ROTATION, Y_ROTATION, Z_ROTATION} from "./utilities/rotat
 import {Space} from "babylonjs";
 
 export type CubeProps = {
-    colours: Color3[]
+    colours: Color3[],
+    makeMove: (move: string) => void
 }
 
 export class Cube extends React.Component<CubeProps, {}> {
 
-    public static middle = (colour1: Color3, position: Vector3, rotationAxis: Vector3) => {
+    private static middle = (colour1: Color3, position: Vector3, rotationAxis: Vector3) => {
         return <box name={`parent`} position={position} visibility={0} onCreated={p => Cube.rotate(rotationAxis, p)}>
             {Cube.face(1, colour1, new Vector3(0, 0.5, 0), Vector3.Right().scale(Math.PI / 2))}
         </box>
     };
 
-    public static edge = (colour1: Color3, colour2: Color3, position: Vector3, rotationAxis: Vector3) => {
+    private static edge = (colour1: Color3, colour2: Color3, position: Vector3, rotationAxis: Vector3) => {
         return <box name={`parent`} position={position} visibility={0} onCreated={p => Cube.rotate(rotationAxis, p)}>
             {Cube.face(1, colour1, new Vector3(0, 0.5, 0), Vector3.Right().scale(Math.PI / 2))}
             {Cube.face(2, colour2, new Vector3(0, 0, -0.5), Vector3.Up().scale(0))}
         </box>
     };
 
-    public static corner = (colour1: Color3, colour2: Color3, colour3: Color3, position: Vector3, rotationAxis: Vector3) => {
+    private static corner = (colour1: Color3, colour2: Color3, colour3: Color3, position: Vector3, rotationAxis: Vector3) => {
         return <box name={`parent`} position={position} visibility={0} onCreated={p => Cube.rotate(rotationAxis, p)}>
             {Cube.face(1, colour1, new Vector3(0, 0.5, 0), Vector3.Right().scale(Math.PI / 2))}
             {Cube.face(2, colour2, new Vector3(0, 0, -0.5), Vector3.Up().scale(0))}
@@ -48,13 +49,13 @@ export class Cube extends React.Component<CubeProps, {}> {
             <standardMaterial name={`material${String(id)}`} diffuseColor={new Color3(0.4, 0.4, 0.4)}
                               specularColor={new Color3(0.7, 0.7, 0.7)} emissiveColor={colour}/>
         </plane>
-    }
+    };
 
     render() {
-        return this.props.colours ? this.makeCube() : "";
+        return this.props.colours ? this.makeCube() : <></>;
     }
 
-    public makeCube = () => {
+    makeCube = () => {
         const colours = this.props.colours;
         //@formatter:off
         return <box name={"cube"} visibility={0}>
