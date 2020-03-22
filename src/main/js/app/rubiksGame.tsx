@@ -1,21 +1,11 @@
 import * as React from 'react';
-import RubiksScene, {SceneEventArgs} from './rubiksScene';
-import {SceneHandler} from "./utilities/SceneHandler";
+import RubiksScene from './rubiksScene';
+import {Communication} from "./utilities/communication";
 
 export default class RubiksGame extends React.Component<{}, {}> {
-
-    onSceneMount = (sceneEventArgs: SceneEventArgs) => {
-        const sceneHandler = new SceneHandler(sceneEventArgs);
-
-        sceneHandler.startEngine();
-        sceneHandler.createInitialObjects();
-
-    };
-
-
     render() {
         return (
-            <RubiksScene onSceneMount={this.onSceneMount}/>
+            <RubiksScene communication={new Communication()} cameraProps={{alpha: 0, beta: 0, radius: 0}}/>
         )
     }
 }
