@@ -109,7 +109,7 @@ export class Cube extends React.Component<CubeProps, {}> {
             {this.button(new Vector3( 1,  buttonFaceDistance, -buttonOtherDistance), '\u25b2', "X_RIGHT_UP")}
             {this.button(new Vector3(-1, -buttonFaceDistance, -buttonOtherDistance), '\u25bc', "X_LEFT_DOWN")}
             {this.button(new Vector3( 0, -buttonFaceDistance, -buttonOtherDistance), '\u25bc', "X_MIDDLE_DOWN")}
-            {this.button(new Vector3( 1, -buttonFaceDistance, -buttonOtherDistance), '\u25bc', "X_MIDDLE_DOWN")}
+            {this.button(new Vector3( 1, -buttonFaceDistance, -buttonOtherDistance), '\u25bc', "X_RIGHT_DOWN")}
 
             {this.button(new Vector3(-buttonFaceDistance, -1, -buttonOtherDistance), '\u25b2', "Y_BOTTOM_LEFT",  yFlip)}
             {this.button(new Vector3(-buttonFaceDistance,  0, -buttonOtherDistance), '\u25b2', "Y_MIDDLE_LEFT",  yFlip)}
