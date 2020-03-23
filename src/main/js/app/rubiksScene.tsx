@@ -9,10 +9,6 @@ import {Background} from "./background";
 
 export type SceneProps = {
     communication: Communication,
-    engineOptions?: BABYLON.EngineOptions,
-    adaptToDeviceRatio?: boolean,
-    width?: number,
-    height?: number
     cameraProps: { alpha: number, beta: number, radius: number }
 };
 
@@ -47,8 +43,7 @@ export default class RubiksScene extends React.Component<SceneProps, SceneState>
     };
 
     render = () =>
-        <Engine canvasId="renderCanvas" antialias={true} engineOptions={this.props.engineOptions}
-                adaptToDeviceRatio={this.props.adaptToDeviceRatio}>
+        <Engine canvasId="renderCanvas" antialias={true} adaptToDeviceRatio={true}>
             <Scene>
                 <Background cameraProps={this.props.cameraProps} resetCube={this.resetCube}/>
                 <Cube colours={this.state?.colours} makeMove={this.makeMove}
