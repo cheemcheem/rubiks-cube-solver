@@ -2,9 +2,8 @@ const path = require('path');
 
 module.exports = {
     entry: path.join(__dirname, 'src/main/js/index.tsx'),
-    devtool: 'inline-source-map',
-    cache: false,
-    mode: 'development',
+    cache: true,
+    mode: 'production',
     output: {
         path: path.join(__dirname, 'target/classes/static/built/'),
         filename: 'bundle.js'
