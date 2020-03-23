@@ -10,6 +10,7 @@ import {
     Vector3
 } from "@babylonjs/core";
 import {GREEN, YELLOW} from "./utilities/colour";
+import {Control} from "@babylonjs/gui";
 
 export type BackgroundProps = {
     cameraProps: { alpha: number, beta: number, radius: number },
@@ -26,6 +27,17 @@ export class Background extends React.Component<BackgroundProps, {}> {
 
     render() {
         return <>
+            <adtFullscreenUi name={"fullScreenUI"}>
+                <rectangle key={`resetLabel`} name={`resetLabel`} background='black' height='30px' alpha={0.5}
+                           width='100px' cornerRadius={20} thickness={1}
+                           linkOffsetY={30}
+                           verticalAlignment={Control.VERTICAL_ALIGNMENT_TOP}
+                           top={0}
+                           left={0}
+                >
+                    <textBlock name={`resetLabelText`} text={`reset`} color='White'/>
+                </rectangle>
+            </adtFullscreenUi>
             <sphere name={"sun"}
                     segments={20}
                     diameter={3}
