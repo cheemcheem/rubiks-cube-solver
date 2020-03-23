@@ -39,11 +39,18 @@ export default class RubiksScene extends React.Component<SceneProps, SceneState>
             .then(colours => this.setState({colours, buttonsEnabled: true}));
     };
 
+    resetCube = () => {
+        this.setState({buttonsEnabled: false});
+        this.props.communication.newCube()
+            .then(this.props.communication.getCube)
+            .then(colours => this.setState({colours, buttonsEnabled: true}));
+    };
+
     render = () =>
         <Engine canvasId="renderCanvas" antialias={true} engineOptions={this.props.engineOptions}
                 adaptToDeviceRatio={this.props.adaptToDeviceRatio}>
             <Scene>
-                <Background cameraProps={this.props.cameraProps}/>
+                <Background cameraProps={this.props.cameraProps} resetCube={this.resetCube}/>
                 <Cube colours={this.state?.colours} makeMove={this.makeMove}
                       buttonsEnabled={this.state?.buttonsEnabled}/>
             </Scene>

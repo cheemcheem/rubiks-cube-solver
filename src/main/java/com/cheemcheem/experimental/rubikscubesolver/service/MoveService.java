@@ -1,7 +1,7 @@
 package com.cheemcheem.experimental.rubikscubesolver.service;
 
 import com.cheemcheem.experimental.rubikscubesolver.model.Move;
-import com.cheemcheem.experimental.rubikscubesolver.model.State;
+import com.cheemcheem.experimental.rubikscubesolver.utility.MoveMaker;
 import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -28,168 +28,10 @@ public class MoveService {
     }
 
     var state = optionalState.get();
-    switch (move) {
-      case X_LEFT_UP:
-        xLeftUp(state);
-        break;
-      case X_LEFT_DOWN:
-        xLeftDown(state);
-        break;
-      case X_MIDDLE_UP:
-        xMiddleUp(state);
-        break;
-      case X_MIDDLE_DOWN:
-        xMiddleDown(state);
-        break;
-      case X_RIGHT_UP:
-        xRightUp(state);
-        break;
-      case X_RIGHT_DOWN:
-        xRightDown(state);
-        break;
-      case Y_TOP_RIGHT:
-        yTopRight(state);
-        break;
-      case Y_TOP_LEFT:
-        yTopLeft(state);
-        break;
-      case Y_MIDDLE_RIGHT:
-        yMiddleRight(state);
-        break;
-      case Y_MIDDLE_LEFT:
-        yMiddleLeft(state);
-        break;
-      case Y_BOTTOM_RIGHT:
-        yBottomRight(state);
-        break;
-      case Y_BOTTOM_LEFT:
-        yBottomLeft(state);
-        break;
-      case Z_NEAR_CLOCKWISE:
-        zNearClockwise(state);
-        break;
-      case Z_NEAR_ANTICLOCKWISE:
-        zNearAntiClockwise(state);
-        break;
-      case Z_MIDDLE_CLOCKWISE:
-        zMiddleClockwise(state);
-        break;
-      case Z_MIDDLE_ANTICLOCKWISE:
-        zMiddleAntiClockwise(state);
-        break;
-      case Z_FAR_CLOCKWISE:
-        zFarClockwise(state);
-        break;
-      case Z_FAR_ANTICLOCKWISE:
-        zFarAntiClockwise(state);
-        break;
-    }
+    var moveMaker = new MoveMaker(state);
+    moveMaker.makeMove(move);
 
     logger.debug("Saving state after move.");
     this.stateService.saveExistingState(state);
   }
-
-  /**
-   * Switches the colour at the given indices in the state around.
-   * E.g 9,10,11 would replace index 10 with 9's colour, index 11 with 10's colour, and index 9 with 11's colour.
-   *
-   * @param state   State to get colour list from.
-   * @param indices Indices from the state.
-   * @throws IndexOutOfBoundsException if any of the indices are greater than 53, or if the indices array is empty.
-   */
-  private void switchPlaces(State state, int... indices) {
-    var colours = state.getColours();
-    var lastColour = colours.get(indices[indices.length - 1]);
-
-    for (int i = indices.length - 1; i > 0; i--) {
-      var currentIndex = indices[i];
-      var previousColour = colours.get(indices[i - 1]);
-      colours.set(currentIndex, previousColour);
-    }
-
-    var firstIndex = indices[0];
-    colours.set(firstIndex, lastColour);
-
-  }
-
-  private void xLeftUp(State state) {
-    switchPlaces(state, 9, 36, 35, 45);
-    switchPlaces(state, 12, 39, 32, 48);
-    switchPlaces(state, 15, 42, 29, 51);
-    switchPlaces(state, 2, 0, 6, 8);
-    switchPlaces(state, 2, 3, 7, 5);
-  }
-
-  private void xLeftDown(State state) {
-    switchPlaces(state, 45, 35, 36, 9);
-    switchPlaces(state, 48, 32, 39, 12);
-    switchPlaces(state, 51, 29, 42, 15);
-    switchPlaces(state, 8, 6, 0, 2);
-    switchPlaces(state, 5, 7, 3, 2);
-  }
-
-  private void xMiddleUp(State state) {
-
-  }
-
-  private void xMiddleDown(State state) {
-
-  }
-
-  private void xRightUp(State state) {
-
-  }
-
-  private void xRightDown(State state) {
-
-  }
-
-  private void yTopRight(State state) {
-
-  }
-
-  private void yTopLeft(State state) {
-
-  }
-
-  private void yMiddleRight(State state) {
-
-  }
-
-  private void yMiddleLeft(State state) {
-
-  }
-
-  private void yBottomRight(State state) {
-
-  }
-
-  private void yBottomLeft(State state) {
-
-  }
-
-  private void zNearClockwise(State state) {
-
-  }
-
-  private void zNearAntiClockwise(State state) {
-
-  }
-
-  private void zMiddleClockwise(State state) {
-
-  }
-
-  private void zMiddleAntiClockwise(State state) {
-
-  }
-
-  private void zFarClockwise(State state) {
-
-  }
-
-  private void zFarAntiClockwise(State state) {
-
-  }
-
 }

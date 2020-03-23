@@ -36,6 +36,7 @@
     "babel-plugin-transform-class-properties": "^6.24.1",
     "babel-plugin-transform-inline-environment-variables": "^0.4.3",
     "babel-plugin-transform-runtime": "^6.23.0",
+    "brotli-webpack-plugin": "^1.1.0",
     "css-loader": "^3.4.2",
     "eslint-plugin-flowtype": "3.13.0",
     "webpack": "^4.41.6",
@@ -46,7 +47,7 @@
     "build": "react-scripts build",
     "test": "react-scripts test",
     "eject": "react-scripts eject",
-    "watch": "webpack --watch -d"
+    "watch": "webpack --watch --debug --devtool cheap-module-eval-source-map --hide-modules"
   },
   "eslintConfig": {
     "extends": "react-app"

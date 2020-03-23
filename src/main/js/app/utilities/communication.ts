@@ -29,6 +29,8 @@ export class Communication {
 
     getCube = () => this.fetchCube().then(this.convertResponse).then(transparentLog);
 
+    newCube = () => fetchX(NEW_URL, {method: "POST"}).then(transparentLog);
+
     private authenticate = () => fetchX(AUTH_URL).then(transparentLog);
 
     private fetchCube = () => fetchX(GET_URL).then(transparentLog);
