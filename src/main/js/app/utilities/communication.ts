@@ -1,5 +1,5 @@
 import * as Cookie from "js-cookie";
-import {AUTH_URL, GET_URL, MOVE_URL, NEW_URL} from "./constants";
+import {AUTH_URL, GET_URL, MOVE_URL, NEW_URL, SHUFFLE_URL} from "./constants";
 import {LogLevel, transparentLog} from "./logging";
 import {localColours, stringToColour} from "./colour";
 
@@ -30,6 +30,8 @@ export class Communication {
     getCube = () => this.fetchCube().then(this.convertResponse).then(transparentLog);
 
     newCube = () => fetchX(NEW_URL, {method: "POST"}).then(transparentLog);
+
+    shuffleCube = () => fetchX(SHUFFLE_URL).then(response => response.text().then(responseText => Array.from<string>(JSON.parse(responseText)))).then(transparentLog);
 
     private authenticate = () => fetchX(AUTH_URL).then(transparentLog);
 
