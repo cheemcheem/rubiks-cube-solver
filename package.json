@@ -40,14 +40,12 @@
     "css-loader": "^3.4.2",
     "eslint-plugin-flowtype": "3.13.0",
     "webpack": "^4.41.6",
-    "webpack-cli": "^3.3.11"
+    "webpack-cli": "^3.3.11",
+    "webpack-merge": "^4.2.2"
   },
   "scripts": {
-    "start": "react-scripts start",
-    "build": "react-scripts build",
-    "test": "react-scripts test",
-    "eject": "react-scripts eject",
-    "watch": "webpack --watch --debug --devtool cheap-module-eval-source-map --hide-modules"
+    "build": "LOG_LEVEL=WARN webpack --config webpack.prod.js",
+    "watch": "LOG_LEVEL=DEBUG webpack --config webpack.dev.js --watch --debug --devtool cheap-module-eval-source-map --hide-modules"
   },
   "eslintConfig": {
     "extends": "react-app"
