@@ -161,7 +161,6 @@ export class Cube extends React.Component<CubeProps, {}> {
             {Cube.corner(colours[36], colours[29], colours[ 0], new Vector3(-1,  1,  1), Y_ROTATION.scale( 2))}
             {Cube.corner(colours[53], colours[33], colours[26], new Vector3( 1, -1,  1), X_ROTATION.scale( 2))}
             {Cube.corner(colours[35], colours[51], colours[ 6], new Vector3(-1, -1,  1), Y_ROTATION.scale( 2).add(X_ROTATION))}
-        }
         </>
         //@formatter:on
     };
