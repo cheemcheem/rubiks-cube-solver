@@ -50,7 +50,7 @@ public class ShufflerService {
     this.stateService.saveExistingState(state);
   }
 
-  private List<Move> randomMoves() {
+  public List<Move> randomMoves() {
     logger.info("ShufflerService.randomMoves");
     var countOfMoves = 20;
     var moves = new ArrayList<Move>();
