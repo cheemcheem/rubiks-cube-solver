@@ -10,7 +10,7 @@ export type CubeProps = {
     buttonsEnabled: boolean
 }
 
-export class Cube extends React.Component<CubeProps, {}> {
+export class Cube extends React.PureComponent<CubeProps> {
 
     private static middle = (colour1: Color3, position: Vector3, rotationAxis: Vector3) => {
         return <box name={`parent`} position={position} visibility={0} onCreated={p => Cube.rotate(rotationAxis, p)}>
@@ -50,10 +50,16 @@ export class Cube extends React.Component<CubeProps, {}> {
     };
 
     private static face = (id: any, colour: Color3, position: Vector3, rotation: Vector3) => {
-        return <plane name={`face${String(id)}`} onCreated={f => f.enableEdgesRendering()} edgesWidth={2.0}
-                      edgesColor={Color4.FromColor3(Color3.Black())} position={position} rotation={rotation}>
-            <standardMaterial name={`material${String(id)}`} diffuseColor={new Color3(0.4, 0.4, 0.4)}
-                              specularColor={new Color3(0.7, 0.7, 0.7)} emissiveColor={colour}/>
+        return <plane name={`face${String(id)}`}
+                      onCreated={f => f.enableEdgesRendering()}
+                      edgesWidth={2.0}
+                      edgesColor={Color4.FromColor3(Color3.Black())}
+                      position={position}
+                      rotation={rotation}>
+            <standardMaterial name={`material${String(id)}`}
+                              diffuseColor={colour}
+                              emissiveColor={colour.scale(0.5)}
+                              specularColor={new Color3(0, 0, 0)}/>
         </plane>
     };
 
