@@ -1,10 +1,8 @@
 const path = require('path');
+const webpack = require("webpack");
 
 module.exports = {
     entry: path.join(__dirname, 'src/main/js/index.tsx'),
-    devtool: 'inline-source-map',
-    cache: false,
-    mode: 'development',
     output: {
         path: path.join(__dirname, 'target/classes/static/built/'),
         filename: 'bundle.js'
@@ -23,5 +21,8 @@ module.exports = {
     },
     resolve: {
         extensions: ['.ts', '.tsx', ".js", ".jsx"],
-    }
+    },
+    plugins: [
+        new webpack.ProgressPlugin({}),
+    ]
 };

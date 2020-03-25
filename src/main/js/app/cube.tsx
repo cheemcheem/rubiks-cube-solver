@@ -10,7 +10,7 @@ export type CubeProps = {
     buttonsEnabled: boolean
 }
 
-export class Cube extends React.Component<CubeProps, {}> {
+export class Cube extends React.PureComponent<CubeProps> {
 
     private static middle = (colour1: Color3, position: Vector3, rotationAxis: Vector3) => {
         return <box name={`parent`} position={position} visibility={0} onCreated={p => Cube.rotate(rotationAxis, p)}>
@@ -50,10 +50,16 @@ export class Cube extends React.Component<CubeProps, {}> {
     };
 
     private static face = (id: any, colour: Color3, position: Vector3, rotation: Vector3) => {
-        return <plane name={`face${String(id)}`} onCreated={f => f.enableEdgesRendering()} edgesWidth={2.0}
-                      edgesColor={Color4.FromColor3(Color3.Black())} position={position} rotation={rotation}>
-            <standardMaterial name={`material${String(id)}`} diffuseColor={new Color3(0.4, 0.4, 0.4)}
-                              specularColor={new Color3(0.7, 0.7, 0.7)} emissiveColor={colour}/>
+        return <plane name={`face${String(id)}`}
+                      onCreated={f => f.enableEdgesRendering()}
+                      edgesWidth={2.0}
+                      edgesColor={Color4.FromColor3(Color3.Black())}
+                      position={position}
+                      rotation={rotation}>
+            <standardMaterial name={`material${String(id)}`}
+                              diffuseColor={colour}
+                              emissiveColor={colour.scale(0.5)}
+                              specularColor={new Color3(0, 0, 0)}/>
         </plane>
     };
 
@@ -109,7 +115,7 @@ export class Cube extends React.Component<CubeProps, {}> {
             {this.button(new Vector3( 1,  buttonFaceDistance, -buttonOtherDistance), '\u25b2', "X_RIGHT_UP")}
             {this.button(new Vector3(-1, -buttonFaceDistance, -buttonOtherDistance), '\u25bc', "X_LEFT_DOWN")}
             {this.button(new Vector3( 0, -buttonFaceDistance, -buttonOtherDistance), '\u25bc', "X_MIDDLE_DOWN")}
-            {this.button(new Vector3( 1, -buttonFaceDistance, -buttonOtherDistance), '\u25bc', "X_MIDDLE_DOWN")}
+            {this.button(new Vector3( 1, -buttonFaceDistance, -buttonOtherDistance), '\u25bc', "X_RIGHT_DOWN")}
 
             {this.button(new Vector3(-buttonFaceDistance, -1, -buttonOtherDistance), '\u25b2', "Y_BOTTOM_LEFT",  yFlip)}
             {this.button(new Vector3(-buttonFaceDistance,  0, -buttonOtherDistance), '\u25b2', "Y_MIDDLE_LEFT",  yFlip)}
@@ -161,7 +167,6 @@ export class Cube extends React.Component<CubeProps, {}> {
             {Cube.corner(colours[36], colours[29], colours[ 0], new Vector3(-1,  1,  1), Y_ROTATION.scale( 2))}
             {Cube.corner(colours[53], colours[33], colours[26], new Vector3( 1, -1,  1), X_ROTATION.scale( 2))}
             {Cube.corner(colours[35], colours[51], colours[ 6], new Vector3(-1, -1,  1), Y_ROTATION.scale( 2).add(X_ROTATION))}
-        }
         </>
         //@formatter:on
     };
