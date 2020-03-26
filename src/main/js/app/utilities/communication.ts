@@ -11,7 +11,7 @@ const fetchX = (input: RequestInfo, init?: RequestInit) => {
     return fetch(input, {...init, ...xsrfCookie});
 };
 
-export class Communication {
+export default class Communication {
     authenticateAndGetCube = () => {
         return this.authenticate()
             .then(this.fetchCube)

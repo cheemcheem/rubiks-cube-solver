@@ -1,15 +1,16 @@
-import {Engine, Scene} from 'react-babylonjs'
+import {Engine, Scene as BabylonScene} from 'react-babylonjs'
 import React from "react";
 import {Color3, Color4} from "@babylonjs/core";
 import '@babylonjs/core/Rendering/edgesRenderer';
-import {Communication} from "./utilities/communication";
+import Communication from "./utilities/communication";
 import {localColours} from "./utilities/colour";
-import {Cube} from "./cube";
-import {Background} from "./background";
+import Background from "./background";
+import "regenerator-runtime/runtime.js"; // async function support in babel
+import Cube from './cube/cube';
+import Buttons from "./buttons/buttons";
 
 export type SceneProps = {
-    communication: Communication,
-    cameraProps: { alpha: number, beta: number }
+    communication: Communication
 };
 
 export type SceneState = {
@@ -17,7 +18,7 @@ export type SceneState = {
     buttonsEnabled: boolean
 }
 
-export default class RubiksScene extends React.PureComponent<SceneProps, SceneState> {
+export default class Scene extends React.PureComponent<SceneProps, SceneState> {
 
     constructor(props: SceneProps) {
         super(props);
@@ -58,13 +59,20 @@ export default class RubiksScene extends React.PureComponent<SceneProps, SceneSt
 
     render() {
         return <>
-            <Engine canvasId="renderCanvas" antialias={true} adaptToDeviceRatio={true}>
-                <Scene clearColor={Color4.FromColor3(Color3.FromHexString("#0a100d"))}>
-                    <Background cameraProps={this.props.cameraProps} resetCube={this.resetCube}
-                                shuffleCube={this.shuffleCube} buttonsEnabled={this.state?.buttonsEnabled}/>
-                    <Cube colours={this.state?.colours} makeMove={this.makeMove}
-                          buttonsEnabled={this.state?.buttonsEnabled}/>
-                </Scene>
+            <Engine canvasId="renderCanvas"
+                    antialias={true}
+                    adaptToDeviceRatio={true}>
+                <BabylonScene clearColor={Color4.FromColor3(Color3.FromHexString("#0a100d"))}>
+                    <Buttons buttonsEnabled={this.state?.buttonsEnabled}
+                             resetCube={this.resetCube}
+                             shuffleCube={this.shuffleCube}
+                             makeMove={this.makeMove}
+                    />
+                    <Background/>
+                    <Cube colours={this.state?.colours}
+                          makeMove={this.makeMove}
+                    />
+                </BabylonScene>
             </Engine>
         </>
     }
