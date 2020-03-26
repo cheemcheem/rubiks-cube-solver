@@ -60,8 +60,8 @@ export default class Scene extends React.PureComponent<SceneProps, SceneState> {
     render() {
         return <>
             <Engine canvasId="renderCanvas"
-                    antialias={true}
-                    adaptToDeviceRatio={true}>
+                    antialias
+                    adaptToDeviceRatio>
                 <BabylonScene clearColor={Color4.FromColor3(Color3.FromHexString("#0a100d"))}>
                     <Buttons buttonsEnabled={this.state?.buttonsEnabled}
                              resetCube={this.resetCube}

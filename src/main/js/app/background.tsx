@@ -5,6 +5,8 @@ export default class Background extends React.PureComponent {
     render() {
         return <>
             <arcRotateCamera name={"camera"}
+                             lockedTarget
+                             panningSensibility={0}
                              alpha={0}
                              beta={0}
                              radius={15}
@@ -14,11 +16,7 @@ export default class Background extends React.PureComponent {
                              upperBetaLimit={3 * Math.PI / 4}
                              lowerBetaLimit={Math.PI / 4}/>
             <directionalLight name={"light"}
-                              direction={new Vector3(5, -5, 5)}
-                              intensity={1}
-            />
-            <directionalLight name={"light"}
-                              direction={new Vector3(0, -5, 0)}
+                              direction={new Vector3(5, 5, 5)}
                               intensity={1}
             />
             <directionalLight name={"light"}
