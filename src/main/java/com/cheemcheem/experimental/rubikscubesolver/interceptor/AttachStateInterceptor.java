@@ -15,7 +15,7 @@ import java.util.regex.Pattern;
 public class AttachStateInterceptor implements HandlerInterceptor {
   private static final Logger logger = LoggerFactory.getLogger(AttachStateInterceptor.class);
   private static final Predicate<String> excludedPaths
-          = Pattern.compile("(/api/state(?!/new)(/.*)*)|(/api/move(/.*)*)|(/api/shuffle(/.*)*)").asMatchPredicate().negate();
+          = Pattern.compile("(/api/state(?!/new)(/.*)*)|(/api/move(/.*)*)|(/api/shuffle(/.*)*)|(/api/solve(/.*)*)").asMatchPredicate().negate();
 
   @Override
   public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) {

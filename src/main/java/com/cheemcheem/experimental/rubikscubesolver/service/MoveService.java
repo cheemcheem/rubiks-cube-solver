@@ -2,6 +2,7 @@ package com.cheemcheem.experimental.rubikscubesolver.service;
 
 import com.cheemcheem.experimental.rubikscubesolver.model.Move;
 import com.cheemcheem.experimental.rubikscubesolver.utility.MoveMaker;
+import com.cheemcheem.experimental.rubikscubesolver.utility.solver.CubeSolver;
 import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -30,6 +31,15 @@ public class MoveService {
     var state = optionalState.get();
     var moveMaker = new MoveMaker(state);
     moveMaker.makeMove(move);
+
+    var solved = CubeSolver.solved(state);
+    if (solved) {
+      logger.debug("State is solved, clearing history.");
+      state.getHistory().clear();
+    } else {
+      logger.debug("State is not solved, adding move to history.");
+      state.getHistory().add(move);
+    }
 
     logger.debug("Saving state after move.");
     this.stateService.saveExistingState(state);

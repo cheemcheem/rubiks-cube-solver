@@ -3,6 +3,7 @@ export const NEW_URL = "/api/state/new";
 export const GET_URL = "/api/state/get";
 export const MOVE_URL = "/api/move/";
 export const SHUFFLE_URL = "/api/shuffle";
+export const SOLVE_URL = "/api/solve";
 export const MOVES = {
     X: {
         LEFT: {
