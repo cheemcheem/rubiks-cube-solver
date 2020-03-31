@@ -10,6 +10,7 @@ export default class Buttons extends React.PureComponent<ButtonsProps> {
             <StaticButtons buttonsEnabled={this.props.buttonsEnabled}
                            resetCube={this.props.resetCube}
                            shuffleCube={this.props.shuffleCube}
+                           solveCube={this.props.solveCube}
             />
             <CubeButtons makeMove={this.props.makeMove}
                          buttonsEnabled={this.props.buttonsEnabled}

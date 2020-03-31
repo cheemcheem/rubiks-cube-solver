@@ -3,6 +3,12 @@
        xmlns="http://www.springframework.org/schema/beans"
        xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd">
     <!--  Add all profiles here for IntelliJ to pick up.  -->
+    <beans>
+        <bean class="java.lang.Class" factory-method="forName">
+            <constructor-arg type="java.lang.String"
+                             value="com.cheemcheem.experimental.rubikscubesolver.utility.solver.CheatCubeSolver"/>
+        </bean>
+    </beans>
     <beans profile="demo">
 
     </beans>

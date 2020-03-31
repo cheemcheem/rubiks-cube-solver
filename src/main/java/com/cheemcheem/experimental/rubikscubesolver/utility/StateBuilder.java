@@ -1,6 +1,7 @@
 package com.cheemcheem.experimental.rubikscubesolver.utility;
 
 import com.cheemcheem.experimental.rubikscubesolver.model.Colour;
+import com.cheemcheem.experimental.rubikscubesolver.model.Move;
 import com.cheemcheem.experimental.rubikscubesolver.model.State;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -22,6 +23,7 @@ public class StateBuilder {
   private static final Logger logger = LoggerFactory.getLogger(StateBuilder.class);
 
   private List<Colour> colours;
+  private List<Move> history;
 
   private List<Colour> colours() {
     var state = new ArrayList<Colour>();
@@ -47,12 +49,21 @@ public class StateBuilder {
     return this;
   }
 
+  public StateBuilder setHistory(List<Move> history) {
+    this.history = history;
+    return this;
+  }
+
   public State createState() {
     if (this.colours == null) {
       this.colours = colours();
     }
+    if (this.history == null) {
+      this.history = new ArrayList<>();
+    }
     var state = new State();
-    state.setColours(new ArrayList<>(colours));
+    state.setColours(new ArrayList<>(this.colours));
+    state.setHistory(new ArrayList<>(this.history));
     return state;
   }
 }

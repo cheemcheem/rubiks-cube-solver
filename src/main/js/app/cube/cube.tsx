@@ -6,8 +6,7 @@ import {Edge} from "./edge";
 import {Corner} from "./corner";
 
 export type CubeProps = {
-    colours: Color3[],
-    makeMove: (move: string) => void
+    colours: Color3[]
 }
 
 export default class Cube extends React.PureComponent<CubeProps> {

@@ -29,34 +29,6 @@ export default class Scene extends React.PureComponent<SceneProps, SceneState> {
         this.props.communication.authenticateAndGetCube().then(colours => this.setState({colours}));
     }
 
-    makeMove = (move: string) => {
-        this.setState({buttonsEnabled: false});
-        this.props.communication.makeMove(move)
-            .then(this.props.communication.getCube)
-            .then(colours => this.setState({colours, buttonsEnabled: true}));
-    };
-
-    resetCube = () => {
-        this.setState({buttonsEnabled: false});
-        this.props.communication.newCube()
-            .then(this.props.communication.getCube)
-            .then(colours => this.setState({colours, buttonsEnabled: true}));
-    };
-
-    shuffleCube = () => {
-        this.setState({buttonsEnabled: false});
-        this.props.communication.shuffleCube()
-            .then(async (moves: string[]) => {
-                while (moves.length > 0) {
-                    const move = moves.pop();
-                    await this.props.communication.makeMove(move!)
-                        .then(this.props.communication.getCube)
-                        .then(colours => this.setState({colours}));
-                }
-            })
-            .then(() => this.setState({buttonsEnabled: true}));
-    };
-
     render() {
         return <>
             <Engine canvasId="renderCanvas"
@@ -66,14 +38,51 @@ export default class Scene extends React.PureComponent<SceneProps, SceneState> {
                     <Buttons buttonsEnabled={this.state?.buttonsEnabled}
                              resetCube={this.resetCube}
                              shuffleCube={this.shuffleCube}
+                             solveCube={this.solveCube}
                              makeMove={this.makeMove}
                     />
                     <Background/>
-                    <Cube colours={this.state?.colours}
-                          makeMove={this.makeMove}
-                    />
+                    <Cube colours={this.state?.colours}/>
                 </BabylonScene>
             </Engine>
         </>
     }
+
+    private makeMove = (move: string) => {
+        this.setState({buttonsEnabled: false});
+        this.props.communication.makeMove(move)
+            .then(this.props.communication.getCube)
+            .then(colours => this.setState({colours, buttonsEnabled: true}));
+    };
+
+    private resetCube = () => {
+        this.setState({buttonsEnabled: false});
+        this.props.communication.newCube()
+            .then(this.props.communication.getCube)
+            .then(colours => this.setState({colours, buttonsEnabled: true}));
+    };
+
+    private shuffleCube = () => {
+        this.setState({buttonsEnabled: false});
+        this.props.communication.shuffleCube()
+            .then(this.makeMultipleMoves)
+            .then(() => this.setState({buttonsEnabled: true}));
+    };
+
+    private solveCube = () => {
+        this.setState({buttonsEnabled: false});
+        this.props.communication.solveCube()
+            .then(moves => this.makeMultipleMoves(moves, 250))
+            .then(() => this.setState({buttonsEnabled: true}));
+    };
+
+    private makeMultipleMoves = async (moves: string[], delayBetweenMoves: number = 0) => {
+        while (moves.length > 0) {
+            const move = moves.pop();
+            await new Promise(resolve => setTimeout(resolve, delayBetweenMoves));
+            await this.props.communication.makeMove(move!)
+                .then(this.props.communication.getCube)
+                .then(colours => this.setState({colours}));
+        }
+    };
 }
