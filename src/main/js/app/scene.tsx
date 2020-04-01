@@ -4,44 +4,52 @@ import {Color3, Color4} from "@babylonjs/core";
 import '@babylonjs/core/Rendering/edgesRenderer';
 import Communication from "./utilities/communication";
 import {localColours} from "./utilities/colour";
-import Background from "./background";
 import "regenerator-runtime/runtime.js"; // async function support in babel
 import Cube from './cube/cube';
+import Background from "./background";
 import Buttons from "./buttons/buttons";
+import {CookieDialogue} from "./cookies";
 
 export type SceneProps = {
-    communication: Communication
+    communication: Communication,
+    acceptedCookies: boolean,
+    setAcceptedCookies: () => void
 };
 
 export type SceneState = {
     colours: Color3[],
-    buttonsEnabled: boolean
+    buttonsEnabled: boolean,
+    retrievedInitialCube: boolean
 }
 
 export default class Scene extends React.PureComponent<SceneProps, SceneState> {
 
     constructor(props: SceneProps) {
         super(props);
-        this.state = {colours: localColours, buttonsEnabled: true};
-    }
-
-    componentDidMount() {
-        this.props.communication.authenticateAndGetCube().then(colours => this.setState({colours}));
+        this.state = {colours: localColours, buttonsEnabled: true, retrievedInitialCube: false};
     }
 
     render() {
+        if (this.props.acceptedCookies && !this.state.retrievedInitialCube) {
+            this.props.communication.authenticateAndGetCube().then(colours => this.setState({colours}));
+            this.setState({retrievedInitialCube: true});
+        }
         return <>
             <Engine canvasId="renderCanvas"
                     antialias
                     adaptToDeviceRatio>
                 <BabylonScene clearColor={Color4.FromColor3(Color3.FromHexString("#0a100d"))}>
-                    <Buttons buttonsEnabled={this.state?.buttonsEnabled}
-                             resetCube={this.resetCube}
-                             shuffleCube={this.shuffleCube}
-                             solveCube={this.solveCube}
-                             makeMove={this.makeMove}
-                    />
-                    <Background/>
+                    {this.props.acceptedCookies ? <>
+                        <Buttons buttonsEnabled={this.state?.buttonsEnabled}
+                                 resetCube={this.resetCube}
+                                 shuffleCube={this.shuffleCube}
+                                 solveCube={this.solveCube}
+                                 makeMove={this.makeMove}
+                        />
+                    </> : <>
+                        <CookieDialogue setAcceptedCookies={this.props.setAcceptedCookies}/>
+                    </>}
+                    <Background spin={!this.props.acceptedCookies}/>
                     <Cube colours={this.state?.colours}/>
                 </BabylonScene>
             </Engine>
