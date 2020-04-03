@@ -1,6 +1,6 @@
 import {Engine, Scene as BabylonScene} from 'react-babylonjs'
 import React from "react";
-import {ArcRotateCamera, Color3, Color4, Vector3} from "@babylonjs/core";
+import {ArcRotateCamera, Color3, Color4} from "@babylonjs/core";
 import '@babylonjs/core/Rendering/edgesRenderer';
 import Communication from "./utilities/communication";
 import {localColours} from "./utilities/colour";
@@ -21,7 +21,6 @@ export type SceneState = {
     buttonsEnabled: boolean,
     acceptedCookies: boolean
 }
-
 
 export default class Scene extends React.PureComponent<SceneProps, SceneState> {
     private mouseDown = 0;
@@ -53,36 +52,20 @@ export default class Scene extends React.PureComponent<SceneProps, SceneState> {
                 <BabylonScene onPointerDown={() => ++this.mouseDown}
                               onPointerUp={() => --this.mouseDown}
                               pointerMovePredicate={() => !this.mouseDown}
-                              beforeRender={() => {
-                                  this.cameraChanged()
-                              }}
-                              clearColor={Color4.FromColor3(Color3.FromHexString("#0a100d"))}>
+                              beforeRender={this.beforeRenderNewFrame}
+                              clearColor={Color4.FromColor3(Color3.FromHexString("#0a100d"))}
+                              onSceneMount={scene => scene.scene.onActiveCameraChanged.add(scene => this.camera = scene.getCameraByID("camera") as ArcRotateCamera)}>
                     {
-                        this.state.acceptedCookies ? <>
-                            <Buttons buttonsEnabled={this.state?.buttonsEnabled}
-                                     resetCube={this.resetCube}
-                                     shuffleCube={this.shuffleCube}
-                                     solveCube={this.solveCube}
-                                     makeMove={this.makeMove}
+                        (this.state.acceptedCookies)
+                            ? <Buttons buttonsEnabled={this.state?.buttonsEnabled}
+                                       resetCube={this.resetCube}
+                                       shuffleCube={this.shuffleCube}
+                                       solveCube={this.solveCube}
+                                       makeMove={this.makeMove}
                             />
-                        </> : <>
-                            <CookieDialogue setAcceptedCookies={this.setAcceptedCookies}/>
-                        </>
+                            : <CookieDialogue setAcceptedCookies={this.setAcceptedCookies}/>
                     }
-                    <arcRotateCamera name={"camera"}
-                                     useAutoRotationBehavior={!this.state.acceptedCookies}
-                                     lockedTarget
-                                     panningSensibility={0}
-                                     alpha={-Math.PI / 2}
-                                     beta={Math.PI / 3}
-                                     radius={15}
-                                     target={new Vector3(0, 0, 0)}
-                                     upperRadiusLimit={15}
-                                     lowerRadiusLimit={15}
-                                     upperBetaLimit={3 * Math.PI / 4}
-                                     lowerBetaLimit={Math.PI / 4}
-                                     onCreated={camera => this.camera = camera}/>
-                    <Background/>
+                    <Background spin={!this.state.acceptedCookies}/>
                     <Cube colours={this.state?.colours}/>
                 </BabylonScene>
             </Engine>
@@ -95,7 +78,7 @@ export default class Scene extends React.PureComponent<SceneProps, SceneState> {
         await this.retrieveCube();
     };
 
-    private cameraChanged = () => {
+    private beforeRenderNewFrame = () => {
         const interpolate = (min: number, current: number, max: number) => {
             return (max - current) / Math.pow((max - min), 2);
         };
@@ -130,12 +113,11 @@ export default class Scene extends React.PureComponent<SceneProps, SceneState> {
         };
 
         if (this.state.acceptedCookies && this.camera && this.mouseDown === 0) {
-            const camera = this.camera;
-            const currentAngle = camera.alpha > 0 ? ((camera.alpha) % (2 * Math.PI)) : (2 * Math.PI) - Math.abs((camera.alpha) % (2 * Math.PI));
+            const currentAngle = this.camera.alpha > 0 ? ((this.camera.alpha) % (2 * Math.PI)) : (2 * Math.PI) - Math.abs((this.camera.alpha) % (2 * Math.PI));
             const targetAngle = target(currentAngle);
             const change = targetAngle - currentAngle;
             if (Math.abs(change) > 0.01) {
-                camera.alpha += change * interpolate(0, Math.abs(change), Math.PI / 2) / 10;
+                this.camera.alpha += change * interpolate(0, Math.abs(change), Math.PI / 2) / 10;
             }
         }
     };

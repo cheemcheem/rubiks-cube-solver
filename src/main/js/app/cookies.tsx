@@ -2,7 +2,7 @@ import React from "react";
 import {StaticButton} from "./buttons/staticButton";
 import {Control, TextWrapping} from "@babylonjs/gui";
 
-const {HORIZONTAL_ALIGNMENT_LEFT, HORIZONTAL_ALIGNMENT_CENTER, VERTICAL_ALIGNMENT_BOTTOM, VERTICAL_ALIGNMENT_TOP} = Control;
+const {HORIZONTAL_ALIGNMENT_CENTER, VERTICAL_ALIGNMENT_BOTTOM, VERTICAL_ALIGNMENT_TOP} = Control;
 
 export type CookieDialogueProps = {
     setAcceptedCookies: () => void
