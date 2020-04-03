@@ -1,6 +1,6 @@
 import {Engine, Scene as BabylonScene} from 'react-babylonjs'
 import React from "react";
-import {Color3, Color4} from "@babylonjs/core";
+import {ArcRotateCamera, Color3, Color4, Vector3} from "@babylonjs/core";
 import '@babylonjs/core/Rendering/edgesRenderer';
 import Communication from "./utilities/communication";
 import {localColours} from "./utilities/colour";
@@ -9,65 +9,153 @@ import Cube from './cube/cube';
 import Background from "./background";
 import Buttons from "./buttons/buttons";
 import {CookieDialogue} from "./cookies";
+import Cookies from "js-cookie";
+import {CONSENT_COOKIE} from "./utilities/constants";
 
 export type SceneProps = {
-    communication: Communication,
-    acceptedCookies: boolean,
-    setAcceptedCookies: () => void
+    communication: Communication
 };
 
 export type SceneState = {
     colours: Color3[],
     buttonsEnabled: boolean,
-    retrievedInitialCube: boolean
+    acceptedCookies: boolean
 }
 
+
 export default class Scene extends React.PureComponent<SceneProps, SceneState> {
+    private mouseDown = 0;
+    private camera?: ArcRotateCamera;
 
     constructor(props: SceneProps) {
         super(props);
-        this.state = {colours: localColours, buttonsEnabled: true, retrievedInitialCube: false};
+
+        let state = {colours: localColours, buttonsEnabled: true, acceptedCookies: false};
+
+        if (Cookies.get(CONSENT_COOKIE) === "true") {
+            state.acceptedCookies = true;
+        }
+
+        this.state = state;
     }
 
-    render() {
-        if (this.props.acceptedCookies && !this.state.retrievedInitialCube) {
-            this.props.communication.authenticateAndGetCube().then(colours => this.setState({colours}));
-            this.setState({retrievedInitialCube: true});
+    componentDidMount = async () => {
+        if (this.state.acceptedCookies) {
+            await this.retrieveCube();
         }
+    };
+
+    render() {
         return <>
             <Engine canvasId="renderCanvas"
                     antialias
                     adaptToDeviceRatio>
-                <BabylonScene clearColor={Color4.FromColor3(Color3.FromHexString("#0a100d"))}>
-                    {this.props.acceptedCookies ? <>
-                        <Buttons buttonsEnabled={this.state?.buttonsEnabled}
-                                 resetCube={this.resetCube}
-                                 shuffleCube={this.shuffleCube}
-                                 solveCube={this.solveCube}
-                                 makeMove={this.makeMove}
-                        />
-                    </> : <>
-                        <CookieDialogue setAcceptedCookies={this.props.setAcceptedCookies}/>
-                    </>}
-                    <Background spin={!this.props.acceptedCookies}/>
+                <BabylonScene onPointerDown={() => ++this.mouseDown}
+                              onPointerUp={() => --this.mouseDown}
+                              pointerMovePredicate={() => !this.mouseDown}
+                              beforeRender={() => {
+                                  this.cameraChanged()
+                              }}
+                              clearColor={Color4.FromColor3(Color3.FromHexString("#0a100d"))}>
+                    {
+                        this.state.acceptedCookies ? <>
+                            <Buttons buttonsEnabled={this.state?.buttonsEnabled}
+                                     resetCube={this.resetCube}
+                                     shuffleCube={this.shuffleCube}
+                                     solveCube={this.solveCube}
+                                     makeMove={this.makeMove}
+                            />
+                        </> : <>
+                            <CookieDialogue setAcceptedCookies={this.setAcceptedCookies}/>
+                        </>
+                    }
+                    <arcRotateCamera name={"camera"}
+                                     useAutoRotationBehavior={!this.state.acceptedCookies}
+                                     lockedTarget
+                                     panningSensibility={0}
+                                     alpha={-Math.PI / 2}
+                                     beta={Math.PI / 3}
+                                     radius={15}
+                                     target={new Vector3(0, 0, 0)}
+                                     upperRadiusLimit={15}
+                                     lowerRadiusLimit={15}
+                                     upperBetaLimit={3 * Math.PI / 4}
+                                     lowerBetaLimit={Math.PI / 4}
+                                     onCreated={camera => this.camera = camera}/>
+                    <Background/>
                     <Cube colours={this.state?.colours}/>
                 </BabylonScene>
             </Engine>
         </>
     }
 
+    private setAcceptedCookies = async () => {
+        Cookies.set(CONSENT_COOKIE, "true");
+        this.setState({acceptedCookies: true});
+        await this.retrieveCube();
+    };
+
+    private cameraChanged = () => {
+        const interpolate = (min: number, current: number, max: number) => {
+            return (max - current) / Math.pow((max - min), 2);
+        };
+        const target = (current: number) => {
+            if (current > 0 && current < Math.PI / 2) {
+                if (current > (Math.PI / 2 - current)) {
+                    return Math.PI / 2;
+                } else {
+                    return 0;
+                }
+            } else if (current > Math.PI / 2 && current < Math.PI) {
+                if ((current - Math.PI / 2) > (Math.PI - current)) {
+                    return Math.PI;
+                } else {
+                    return Math.PI / 2;
+                }
+            } else if (current > Math.PI && current < (3 * Math.PI / 2)) {
+                if ((current - Math.PI) > ((3 * Math.PI / 2) - current)) {
+                    return (3 * Math.PI / 2);
+                } else {
+                    return Math.PI;
+                }
+            } else if (current > (3 * Math.PI / 2) && current < (2 * Math.PI)) {
+                if ((current - (3 * Math.PI / 2)) > ((2 * Math.PI) - current)) {
+                    return (2 * Math.PI);
+                } else {
+                    return (3 * Math.PI / 2);
+                }
+            }
+
+            return current;
+        };
+
+        if (this.state.acceptedCookies && this.camera && this.mouseDown === 0) {
+            const camera = this.camera;
+            const currentAngle = camera.alpha > 0 ? ((camera.alpha) % (2 * Math.PI)) : (2 * Math.PI) - Math.abs((camera.alpha) % (2 * Math.PI));
+            const targetAngle = target(currentAngle);
+            const change = targetAngle - currentAngle;
+            if (Math.abs(change) > 0.01) {
+                camera.alpha += change * interpolate(0, Math.abs(change), Math.PI / 2) / 10;
+            }
+        }
+    };
+
+    private retrieveCube = () => {
+        return this.props.communication.authenticateAndGetCube().then(colours => this.setState({colours}));
+    };
+
     private makeMove = (move: string) => {
         this.setState({buttonsEnabled: false});
         this.props.communication.makeMove(move)
             .then(this.props.communication.getCube)
-            .then(colours => this.setState({colours, buttonsEnabled: true}));
+            .then(colours => this.setState({colours, buttonsEnabled: true}))
     };
 
     private resetCube = () => {
         this.setState({buttonsEnabled: false});
         this.props.communication.newCube()
             .then(this.props.communication.getCube)
-            .then(colours => this.setState({colours, buttonsEnabled: true}));
+            .then(colours => this.setState({colours, buttonsEnabled: true}))
     };
 
     private shuffleCube = () => {
@@ -88,9 +176,7 @@ export default class Scene extends React.PureComponent<SceneProps, SceneState> {
         while (moves.length > 0) {
             const move = moves.pop();
             await new Promise(resolve => setTimeout(resolve, delayBetweenMoves));
-            await this.props.communication.makeMove(move!)
-                .then(this.props.communication.getCube)
-                .then(colours => this.setState({colours}));
+            await this.props.communication.makeMove(move!).then(this.retrieveCube);
         }
     };
 }

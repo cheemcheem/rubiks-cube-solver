@@ -1,6 +1,8 @@
+export const CONSENT_COOKIE = "cookie-consent";
 export const AUTH_URL = "/api/authentication";
 export const NEW_URL = "/api/state/new";
 export const GET_URL = "/api/state/get";
+export const EXISTS_URL = "/api/state/exists";
 export const MOVE_URL = "/api/move/";
 export const SHUFFLE_URL = "/api/shuffle";
 export const SOLVE_URL = "/api/solve";

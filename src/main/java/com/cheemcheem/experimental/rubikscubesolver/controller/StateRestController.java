@@ -71,4 +71,16 @@ public class StateRestController {
     return ResponseEntity.created(URI.create(("/api/state/get"))).build();
   }
 
+  @GetMapping("/exists")
+  public ResponseEntity<Boolean> stateExistsForSession(HttpSession httpSession) {
+    logger.info("StateRestController.stateExistsForSession");
+
+    var sessionId = httpSession.getId();
+    logger.debug("Session found '{}'.", sessionId);
+
+    var stateId = httpSession.getAttribute(Constants.STATE_SESSION_KEY);
+    logger.debug("State {} exist for session.", stateId != null ? "does" : "does not");
+    return ResponseEntity.ok(stateId != null);
+  }
+
 }
