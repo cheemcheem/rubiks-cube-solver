@@ -6,6 +6,12 @@ export const EXISTS_URL = "/api/state/exists";
 export const MOVE_URL = "/api/move/";
 export const SHUFFLE_URL = "/api/shuffle";
 export const SOLVE_URL = "/api/solve";
+export const BUTTON = ({currentButton}: BUTTON_TYPE) => currentButton;
+export type BUTTON_TYPE = { currentButton: "reset" | "solve" | "shuffle" | "none" }
+export const CURRENT_MOVE_COLOUR = "red";
+export const READY_COLOUR = "green";
+export const UNAVAILABLE_COLOUR = "grey";
+export const HIGHLIGHTED_COLOUR = "lightgreen";
 export const MOVES = {
     X: {
         LEFT: {
@@ -50,10 +56,3 @@ export const MOVES = {
         }
     }
 };
-
-export enum ROTATION {
-    LEFT_,
-    LEFT_90,
-    LEFT_180,
-    LEFT_270
-}

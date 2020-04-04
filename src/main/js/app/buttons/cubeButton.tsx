@@ -1,6 +1,7 @@
 import {Vector3} from "@babylonjs/core";
 import React from "react";
 import {Button} from "@babylonjs/gui";
+import {CURRENT_MOVE_COLOUR, HIGHLIGHTED_COLOUR, READY_COLOUR, UNAVAILABLE_COLOUR} from "../utilities/constants";
 
 export type CubeButtonProps = {
     position: Vector3
@@ -8,7 +9,8 @@ export type CubeButtonProps = {
     move: string
     rotation: Vector3
     buttonsEnabled: boolean
-    makeMove: (move: string) => void
+    makeMove: (move: string) => void,
+    currentMove: string
 }
 
 export class CubeButton extends React.PureComponent<CubeButtonProps> {
@@ -30,10 +32,27 @@ export class CubeButton extends React.PureComponent<CubeButtonProps> {
                                cornerRadius={12}>
                         <babylon-button name={`${this.props.move}MoveButton`}
                                         isEnabled={this.props.buttonsEnabled}
-                                        background={this.props.buttonsEnabled ? "green" : "grey"}
+                                        background={this.props.currentMove === this.props.move
+                                            ? CURRENT_MOVE_COLOUR
+                                            : this.props.buttonsEnabled
+                                                ? READY_COLOUR
+                                                : UNAVAILABLE_COLOUR
+                                        }
                                         onPointerClickObservable={() => this.props.makeMove(this.props.move)}
-                                        onPointerEnterObservable={(b: Button) => b.background = this.props.buttonsEnabled ? "lightgreen" : "grey"}
-                                        onPointerOutObservable={(b: Button) => b.background = this.props.buttonsEnabled ? "green" : "grey"}>
+                                        onPointerEnterObservable={(b: Button) => {
+                                            b.background = this.props.currentMove === this.props.move
+                                                ? CURRENT_MOVE_COLOUR
+                                                : this.props.buttonsEnabled
+                                                    ? HIGHLIGHTED_COLOUR
+                                                    : UNAVAILABLE_COLOUR
+                                        }}
+                                        onPointerOutObservable={(b: Button) => {
+                                            b.background = this.props.currentMove === this.props.move
+                                                ? CURRENT_MOVE_COLOUR
+                                                : this.props.buttonsEnabled
+                                                    ? READY_COLOUR
+                                                    : UNAVAILABLE_COLOUR
+                                        }}>
                             <textBlock text={this.props.symbol}
                                        fontStyle="bold"
                                        fontSize={300}
