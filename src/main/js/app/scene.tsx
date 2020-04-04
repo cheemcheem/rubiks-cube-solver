@@ -19,7 +19,8 @@ export type SceneProps = {
 export type SceneState = {
     colours: Color3[],
     buttonsEnabled: boolean,
-    acceptedCookies: boolean
+    acceptedCookies: boolean,
+    cubeButtonRotation: number
 }
 
 export default class Scene extends React.PureComponent<SceneProps, SceneState> {
@@ -29,7 +30,7 @@ export default class Scene extends React.PureComponent<SceneProps, SceneState> {
     constructor(props: SceneProps) {
         super(props);
 
-        let state = {colours: localColours, buttonsEnabled: true, acceptedCookies: false};
+        let state = {colours: localColours, buttonsEnabled: true, acceptedCookies: false, cubeButtonRotation: 0};
 
         if (Cookies.get(CONSENT_COOKIE) === "true") {
             state.acceptedCookies = true;
@@ -54,10 +55,13 @@ export default class Scene extends React.PureComponent<SceneProps, SceneState> {
                               pointerMovePredicate={() => !this.mouseDown}
                               beforeRender={this.beforeRenderNewFrame}
                               clearColor={Color4.FromColor3(Color3.FromHexString("#0a100d"))}
-                              onSceneMount={scene => scene.scene.onActiveCameraChanged.add(scene => this.camera = scene.getCameraByID("camera") as ArcRotateCamera)}>
+                              onSceneMount={scene => {
+                                  scene.scene.onActiveCameraChanged.add(scene => this.camera = scene.getCameraByID("camera") as ArcRotateCamera);
+                              }}>
                     {
                         (this.state.acceptedCookies)
-                            ? <Buttons buttonsEnabled={this.state?.buttonsEnabled}
+                            ? <Buttons cubeButtonRotation={this.state.cubeButtonRotation}
+                                       buttonsEnabled={this.state?.buttonsEnabled}
                                        resetCube={this.resetCube}
                                        shuffleCube={this.shuffleCube}
                                        solveCube={this.solveCube}
@@ -112,11 +116,14 @@ export default class Scene extends React.PureComponent<SceneProps, SceneState> {
             return current;
         };
 
-        if (this.state.acceptedCookies && this.camera && this.mouseDown === 0) {
+        if (this.state.acceptedCookies && this.camera) {
             const currentAngle = this.camera.alpha > 0 ? ((this.camera.alpha) % (2 * Math.PI)) : (2 * Math.PI) - Math.abs((this.camera.alpha) % (2 * Math.PI));
+
             const targetAngle = target(currentAngle);
+            this.setState({cubeButtonRotation: (3 * Math.PI / 2) - targetAngle});
+
             const change = targetAngle - currentAngle;
-            if (Math.abs(change) > 0.01) {
+            if (this.mouseDown === 0 && Math.abs(change) > 0.01) {
                 this.camera.alpha += change * interpolate(0, Math.abs(change), Math.PI / 2) / 10;
             }
         }

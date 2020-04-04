@@ -50,3 +50,10 @@ export const MOVES = {
         }
     }
 };
+
+export enum ROTATION {
+    LEFT_,
+    LEFT_90,
+    LEFT_180,
+    LEFT_270
+}

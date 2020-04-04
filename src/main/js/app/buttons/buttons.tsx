@@ -1,5 +1,5 @@
 import {default as StaticButtons, StaticButtonsProps} from "./staticButtons";
-import {CubeButtonsProps, default as CubeButtons} from "./cubeButtons";
+import {CubeButtonsProps, default as CubeButtons} from "./singleOrientationCubeButtons";
 import React from "react";
 
 export type ButtonsProps = StaticButtonsProps & CubeButtonsProps;
@@ -12,7 +12,8 @@ export default class Buttons extends React.PureComponent<ButtonsProps> {
                            shuffleCube={this.props.shuffleCube}
                            solveCube={this.props.solveCube}
             />
-            <CubeButtons makeMove={this.props.makeMove}
+            <CubeButtons cubeButtonRotation={this.props.cubeButtonRotation}
+                         makeMove={this.props.makeMove}
                          buttonsEnabled={this.props.buttonsEnabled}
             />
         </>
