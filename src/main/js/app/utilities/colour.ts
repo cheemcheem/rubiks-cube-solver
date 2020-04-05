@@ -8,7 +8,6 @@ export const ORANGE = Color3.Lerp(Color3.Red(), Color3.Yellow(), 0.5).scale(0.9)
 export const YELLOW = Color3.Yellow().scale(0.9);
 
 const COLOUR_MAP = new Map([["RED", RED], ["GREEN", GREEN], ["BLUE", BLUE], ["WHITE", WHITE], ["ORANGE", ORANGE], ["YELLOW", YELLOW]]);
-
 export const stringToColour = (value: string) => {
     const lookup = COLOUR_MAP.get(value);
     if (lookup === undefined) {
@@ -17,7 +16,7 @@ export const stringToColour = (value: string) => {
     return lookup;
 };
 
-export const localColours = [
+export const LOCAL_COLOURS = [
     ORANGE,
     ORANGE,
     ORANGE,
@@ -73,4 +72,3 @@ export const localColours = [
     GREEN,
     GREEN
 ];
-

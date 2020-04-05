@@ -1,14 +1,18 @@
 import React from "react";
 import {Vector3} from "@babylonjs/core";
 
-export default class Background extends React.PureComponent {
+export type BackgroundProps = { spin: boolean }
+
+export default class Background extends React.PureComponent<BackgroundProps> {
+
     render() {
         return <>
             <arcRotateCamera name={"camera"}
+                             useAutoRotationBehavior={this.props.spin}
                              lockedTarget
                              panningSensibility={0}
-                             alpha={0}
-                             beta={0}
+                             alpha={-Math.PI / 2}
+                             beta={Math.PI / 3}
                              radius={15}
                              target={new Vector3(0, 0, 0)}
                              upperRadiusLimit={15}
