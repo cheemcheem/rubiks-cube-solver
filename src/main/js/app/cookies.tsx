@@ -32,7 +32,7 @@ export class CookieDialogue extends React.PureComponent<CookieDialogueProps> {
                                color='white'
                                text={"We use cookies to authenticate you as the\nowner of a rubik's cube in our system."}
                                heightInPixels={600}
-                               fontSize={this.props.windowWidth < 700 ? 50 : 30}
+                               fontSize={this.props.windowWidth < 400 ? 30 : this.props.windowWidth < 700 ? 50 : 30}
                                lineSpacing={1}/>
                     <StaticButton windowWidth={this.props.windowWidth}
                                   currentButton={button({currentButton: "none"})}
