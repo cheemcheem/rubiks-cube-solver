@@ -1,7 +1,9 @@
 import * as Cookie from "js-cookie";
-import {AUTH_URL, EXISTS_URL, GET_URL, MOVE_URL, NEW_URL, SHUFFLE_URL, SOLVE_URL} from "./constants";
+import {URLS} from "./constants";
 import {LogLevel, transparentLog} from "./logging";
-import {localColours, stringToColour} from "./colour";
+import {LOCAL_COLOURS, stringToColour} from "./colour";
+
+const {AUTH_URL, EXISTS_URL, GET_URL, MOVE_URL, NEW_URL, SHUFFLE_URL, SOLVE_URL} = URLS;
 
 const getXSRFRequestInit = () => {
     return {headers: {"X-XSRF-TOKEN": String(Cookie.get("XSRF-TOKEN"))}};
@@ -19,7 +21,7 @@ export default class Communication {
             .catch(err => {
                 transparentLog(err, LogLevel.ERROR);
                 transparentLog("Can't connect to back end, running with no saved state.", LogLevel.WARN);
-                return localColours;
+                return LOCAL_COLOURS;
             })
             ;
     };

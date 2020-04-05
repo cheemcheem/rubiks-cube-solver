@@ -3,26 +3,29 @@ import React from "react";
 import {ArcRotateCamera, Color3, Color4} from "@babylonjs/core";
 import '@babylonjs/core/Rendering/edgesRenderer'; // enables borders support in react-babylon
 import Communication from "./utilities/communication";
-import {localColours} from "./utilities/colour";
+import {LOCAL_COLOURS} from "./utilities/colour";
 import "regenerator-runtime/runtime.js"; // async function support in babel
-import Cube from './cube/cube';
+import Cube, {CubeProps} from './cube/cube';
 import Background from "./background";
-import Buttons from "./buttons/buttons";
-import {CookieDialogue} from "./cookies";
+import Buttons, {ButtonsProps} from "./buttons/buttons";
+import {CookieDialogue, CookieDialogueProps} from "./cookies";
 import Cookies from "js-cookie";
-import {BUTTON_TYPE, CONSENT_COOKIE} from "./utilities/constants";
+import {COOKIES} from "./utilities/constants";
+import {ButtonTypeProps, RequiresWindowWidthProps} from "./utilities/types";
+
+const {CONSENT_COOKIE} = COOKIES;
 
 export type SceneProps = {
     communication: Communication
 };
 
-export type SceneState = {
-    colours: Color3[],
-    buttonsEnabled: boolean,
-    acceptedCookies: boolean,
-    cubeButtonRotation: number,
-    currentMove: string
-} & BUTTON_TYPE
+type SceneState =
+    { acceptedCookies: boolean, }
+    & ButtonTypeProps
+    & RequiresWindowWidthProps
+    & CubeProps
+    & ButtonsProps
+    & CookieDialogueProps
 
 export default class Scene extends React.PureComponent<SceneProps, SceneState> {
     private mouseDown = 0;
@@ -31,26 +34,33 @@ export default class Scene extends React.PureComponent<SceneProps, SceneState> {
     constructor(props: SceneProps) {
         super(props);
 
-        let state = {
-            colours: localColours,
+        this.state = {
+            colours: LOCAL_COLOURS,
             buttonsEnabled: true,
-            acceptedCookies: false,
+            acceptedCookies: Cookies.get(CONSENT_COOKIE) === "true",
             cubeButtonRotation: 0,
-            currentMove: ""
+            currentMove: "none",
+            windowWidth: window.innerWidth,
+            makeMove: this.makeMove,
+            resetCube: this.resetCube,
+            shuffleCube: this.shuffleCube,
+            solveCube: this.solveCube,
+            currentButton: "none",
+            setAcceptedCookies: this.setAcceptedCookies
         };
 
-        if (Cookies.get(CONSENT_COOKIE) === "true") {
-            state.acceptedCookies = true;
-        }
-
-        this.state = {...state, currentButton: "none"};
     }
 
     componentDidMount = async () => {
         if (this.state.acceptedCookies) {
             await this.retrieveCube();
         }
+        window.onresize = this.onResize
     };
+
+    componentWillUnmount() {
+        window.removeEventListener("resize", this.onResize);
+    }
 
     render() {
         return <>
@@ -67,16 +77,18 @@ export default class Scene extends React.PureComponent<SceneProps, SceneState> {
                               }}>
                     {
                         (this.state.acceptedCookies)
-                            ? <Buttons currentButton={this.state.currentButton}
+                            ? <Buttons windowWidth={this.state.windowWidth}
+                                       currentButton={this.state.currentButton}
                                        currentMove={this.state.currentMove}
                                        cubeButtonRotation={this.state.cubeButtonRotation}
                                        buttonsEnabled={this.state?.buttonsEnabled}
-                                       resetCube={this.resetCube}
-                                       shuffleCube={this.shuffleCube}
-                                       solveCube={this.solveCube}
-                                       makeMove={this.makeMove}
+                                       resetCube={this.state.resetCube}
+                                       shuffleCube={this.state.shuffleCube}
+                                       solveCube={this.state.solveCube}
+                                       makeMove={this.state.makeMove}
                             />
-                            : <CookieDialogue setAcceptedCookies={this.setAcceptedCookies}/>
+                            : <CookieDialogue windowWidth={this.state.windowWidth}
+                                              setAcceptedCookies={this.state.setAcceptedCookies}/>
                     }
                     <Background spin={!this.state.acceptedCookies}/>
                     <Cube colours={this.state?.colours}/>
@@ -84,6 +96,8 @@ export default class Scene extends React.PureComponent<SceneProps, SceneState> {
             </Engine>
         </>
     }
+
+    private onResize = () => this.setState({windowWidth: window.innerWidth});
 
     private setAcceptedCookies = async () => {
         Cookies.set(CONSENT_COOKIE, "true");
@@ -153,7 +167,7 @@ export default class Scene extends React.PureComponent<SceneProps, SceneState> {
         this.setState({buttonsEnabled: false, currentMove: move});
         this.props.communication.makeMove(move)
             .then(this.props.communication.getCube)
-            .then(colours => this.setState({colours, buttonsEnabled: true, currentMove: ""}))
+            .then(colours => this.setState({colours, buttonsEnabled: true, currentMove: "none"}))
     };
 
     private resetCube = () => {
@@ -167,19 +181,19 @@ export default class Scene extends React.PureComponent<SceneProps, SceneState> {
         this.setState({buttonsEnabled: false, currentButton: "shuffle"});
         this.props.communication.shuffleCube()
             .then(this.makeMultipleMoves)
-            .then(() => this.setState({buttonsEnabled: true, currentMove: "", currentButton: "none"}));
+            .then(() => this.setState({buttonsEnabled: true, currentMove: "none", currentButton: "none"}));
     };
 
     private solveCube = () => {
         this.setState({buttonsEnabled: false, currentButton: "solve"});
         this.props.communication.solveCube()
             .then(moves => this.makeMultipleMoves(moves, 500))
-            .then(() => this.setState({buttonsEnabled: true, currentMove: "", currentButton: "none"}));
+            .then(() => this.setState({buttonsEnabled: true, currentMove: "none", currentButton: "none"}));
     };
 
     private makeMultipleMoves = async (moves: string[], delayBetweenMoves: number = 0) => {
         while (moves.length > 0) {
-            const move = moves.pop() ?? "";
+            const move = moves.pop() ?? "none";
             this.setState({currentMove: move});
             await new Promise(resolve => setTimeout(resolve, delayBetweenMoves));
             await this.props.communication.makeMove(move!)

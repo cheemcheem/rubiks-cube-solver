@@ -1,9 +1,8 @@
 import React from "react";
 import {Vector3} from "@babylonjs/core";
 
-export type BackgroundProps = {
-    spin: boolean
-}
+export type BackgroundProps = { spin: boolean }
+
 export default class Background extends React.PureComponent<BackgroundProps> {
 
     render() {

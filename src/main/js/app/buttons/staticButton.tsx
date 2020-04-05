@@ -1,12 +1,9 @@
 import React from "react";
 import {Button} from "@babylonjs/gui";
-import {
-    BUTTON_TYPE,
-    CURRENT_MOVE_COLOUR,
-    HIGHLIGHTED_COLOUR,
-    READY_COLOUR,
-    UNAVAILABLE_COLOUR
-} from "../utilities/constants";
+import {BUTTON_COLOURS} from "../utilities/constants";
+import {ButtonTypeProps, RequiresWindowWidthProps} from "../utilities/types";
+
+const {CURRENT_MOVE_COLOUR, HIGHLIGHTED_COLOUR, READY_COLOUR, UNAVAILABLE_COLOUR} = BUTTON_COLOURS;
 
 export type StaticButtonProps = {
     name: string
@@ -14,7 +11,7 @@ export type StaticButtonProps = {
     horizontalAlignment: number | undefined
     buttonsEnabled: boolean
     onPointerClickObservable: () => void
-} & BUTTON_TYPE
+} & ButtonTypeProps & RequiresWindowWidthProps
 
 export class StaticButton extends React.PureComponent<StaticButtonProps> {
     render() {
@@ -23,7 +20,7 @@ export class StaticButton extends React.PureComponent<StaticButtonProps> {
                        name={`${this.props.name}Rect`}
                        height='80px'
                        alpha={0.5}
-                       width='300px'
+                       width='30%'
                        cornerRadius={0}
                        thickness={3}
                        verticalAlignment={this.props.verticalAlignment}
@@ -49,7 +46,7 @@ export class StaticButton extends React.PureComponent<StaticButtonProps> {
                     <textBlock name={`${this.props.name}Text`}
                                text={this.props.name}
                                color='white'
-                               fontSize={30}
+                               fontSize={this.props.windowWidth < 700 ? 50 : 30}
                     />
                 </babylon-button>
             </rectangle>

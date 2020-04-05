@@ -1,17 +1,17 @@
 import {Vector3} from "@babylonjs/core";
 import React from "react";
 import {Button} from "@babylonjs/gui";
-import {CURRENT_MOVE_COLOUR, HIGHLIGHTED_COLOUR, READY_COLOUR, UNAVAILABLE_COLOUR} from "../utilities/constants";
+import {BUTTON_COLOURS} from "../utilities/constants";
+import {GenericCubeButtonProps} from "../utilities/types";
+
+const {CURRENT_MOVE_COLOUR, HIGHLIGHTED_COLOUR, READY_COLOUR, UNAVAILABLE_COLOUR} = BUTTON_COLOURS;
 
 export type CubeButtonProps = {
     position: Vector3
     symbol: string
     move: string
     rotation: Vector3
-    buttonsEnabled: boolean
-    makeMove: (move: string) => void,
-    currentMove: string
-}
+} & GenericCubeButtonProps
 
 export class CubeButton extends React.PureComponent<CubeButtonProps> {
     render() {

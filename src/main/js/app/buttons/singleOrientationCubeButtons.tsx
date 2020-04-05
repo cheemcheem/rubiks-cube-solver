@@ -2,14 +2,12 @@ import React from "react";
 import {Vector3} from "@babylonjs/core";
 import {CubeButton} from "./cubeButton";
 import {MOVES} from "../utilities/constants";
+import {GenericCubeButtonProps} from "../utilities/types";
 
 const {X, Y, Z} = MOVES;
-export type CubeButtonsProps = {
-    makeMove: (move: string) => void,
-    buttonsEnabled: boolean,
-    cubeButtonRotation: number,
-    currentMove: string
-}
+
+export type CubeButtonsProps = { cubeButtonRotation: number, } & GenericCubeButtonProps
+
 export default class SingleOrientationCubeButtons extends React.PureComponent<CubeButtonsProps> {
     render() {
         const buttonFaceDistance = 2;
