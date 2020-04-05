@@ -44,6 +44,7 @@ public class ShufflerService {
 
     for (Move move : moves) {
       moveMaker.makeMove(move);
+      state.getHistory().add(move);
     }
 
     logger.debug("Saving state after shuffle.");

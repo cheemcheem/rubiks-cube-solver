@@ -3,7 +3,6 @@ package com.cheemcheem.experimental.rubikscubesolver.config;
 import com.cheemcheem.experimental.rubikscubesolver.service.SolverService;
 import com.cheemcheem.experimental.rubikscubesolver.service.StateService;
 import com.cheemcheem.experimental.rubikscubesolver.service.ValidatorService;
-import lombok.Data;
 import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -51,7 +50,7 @@ public class DemoConfiguration {
         return;
       }
 
-      solver.solve();
+//      solver.solve();
 
       var validAfter = validator.validateState(stateId);
 

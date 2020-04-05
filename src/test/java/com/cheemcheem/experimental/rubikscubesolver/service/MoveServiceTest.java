@@ -18,6 +18,7 @@ import static com.cheemcheem.experimental.rubikscubesolver.model.Colour.WHITE;
 import static com.cheemcheem.experimental.rubikscubesolver.model.Colour.YELLOW;
 import static org.junit.jupiter.api.Assertions.assertArrayEquals;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotEquals;
 import static org.mockito.ArgumentMatchers.isA;
 import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.mock;
@@ -48,7 +49,7 @@ public class MoveServiceTest {
     verify(stateService, times(1)).getStateById(isA(Long.class));
     verify(stateService, times(1)).saveExistingState(isA(State.class));
 
-    var expectedState = this.builder.setColours(expectedColours).createState();
+    var expectedState = this.builder.setColours(expectedColours).setHistory(List.of(move)).createState();
 
     assertEquals(expectedState, state);
     assertArrayEquals(state.getColours().toArray(), expectedColours.toArray());
@@ -70,7 +71,6 @@ public class MoveServiceTest {
     var expectedColours = List.of(ORANGE, ORANGE, ORANGE, ORANGE, ORANGE, ORANGE, ORANGE, ORANGE, ORANGE, BLUE, WHITE, WHITE, BLUE, WHITE, WHITE, BLUE, WHITE, WHITE, RED, RED, RED, RED, RED, RED, RED, RED, RED, YELLOW, YELLOW, GREEN, YELLOW, YELLOW, GREEN, YELLOW, YELLOW, GREEN, YELLOW, BLUE, BLUE, YELLOW, BLUE, BLUE, YELLOW, BLUE, BLUE, WHITE, GREEN, GREEN, WHITE, GREEN, GREEN, WHITE, GREEN, GREEN);
 
     makeMoveAndVerify(move, expectedColours);
-
   }
 
   @Test
@@ -78,8 +78,11 @@ public class MoveServiceTest {
     var moveService = new MoveService(stateService);
     for (Move move : Move.values()) {
       moveService.makeMove(move, stateId);
+      assertNotEquals(this.state, this.builder.createState());
       moveService.makeMove(move, stateId);
+      assertNotEquals(this.state, this.builder.createState());
       moveService.makeMove(move, stateId);
+      assertNotEquals(this.state, this.builder.createState());
       moveService.makeMove(move, stateId);
       assertEquals(this.state, this.builder.createState());
     }

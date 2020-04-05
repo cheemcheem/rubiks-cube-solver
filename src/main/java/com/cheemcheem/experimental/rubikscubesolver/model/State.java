@@ -44,6 +44,9 @@ public class State {
   @ElementCollection
   private List<Colour> colours;
 
+  @ElementCollection
+  private List<Move> history;
+
   public Colour colourAt(int position) {
     return this.colours.get(position);
   }
