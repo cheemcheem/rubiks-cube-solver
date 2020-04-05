@@ -46,7 +46,7 @@ export class StaticButton extends React.PureComponent<StaticButtonProps> {
                     <textBlock name={`${this.props.name}Text`}
                                text={this.props.name}
                                color='white'
-                               fontSize={this.props.windowWidth < 700 ? 50 : 30}
+                               fontSize={this.props.windowWidth < 400 ? 30 : this.props.windowWidth < 700 ? 50 : 30}
                     />
                 </babylon-button>
             </rectangle>
