@@ -28,8 +28,11 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
     http
         .csrf()
           .csrfTokenRepository(CookieCsrfTokenRepository.withHttpOnlyFalse())
-          .and()
-        .cors()
+        .and()
+          .cors()
+        .and()
+            .headers()
+            .contentSecurityPolicy("frame-ancestors https://cheem.uk")
     ;
     //@formatter:on
   }
