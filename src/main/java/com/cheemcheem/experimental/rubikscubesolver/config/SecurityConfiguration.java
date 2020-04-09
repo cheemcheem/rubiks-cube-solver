@@ -32,7 +32,7 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
           .cors()
         .and()
             .headers()
-            .contentSecurityPolicy("frame-ancestors https://cheem.uk")
+            .contentSecurityPolicy("frame-ancestors https://cheem.uk http://localhost:3000")
     ;
     //@formatter:on
   }
