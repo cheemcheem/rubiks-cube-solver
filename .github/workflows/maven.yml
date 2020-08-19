@@ -55,22 +55,22 @@ jobs:
         run: ./mvnw -B package -DskipTests --file pom.xml
 
       - name: Prepare SSH Key and Artefact
-        if: ${{github.ref == 'refs/heads/develop'}}
+#        if: ${{github.ref == 'refs/heads/develop'}}
         run: 'echo "$SSH_KEY" > key && /bin/chmod 700 key && /bin/chmod 700 target && /bin/chmod 700 target/card-games.jar'
         shell: bash
         env:
           SSH_KEY: ${{secrets.KEY}}
 
       - name: Upload Project to Dev Server
-        if: ${{github.ref == 'refs/heads/develop'}}
+        #        if: ${{github.ref == 'refs/heads/develop'}}
         run: /usr/bin/scp -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no -i key target/card-games.jar ${{secrets.USERNAME}}@${{secrets.HOST}}:${{secrets.PATH}}
 
       - name: Deploy Project on Dev Server
-        if: ${{github.ref == 'refs/heads/develop'}}
+        #        if: ${{github.ref == 'refs/heads/develop'}}
         run: /usr/bin/ssh -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no -i key ${{secrets.USERNAME}}@${{secrets.HOST}} ${{secrets.RESTART_SERVICE}}
 
       - name: Alert IFTTT
-        if: ${{github.ref == 'refs/heads/develop'}}
+        #        if: ${{github.ref == 'refs/heads/develop'}}
         uses: distributhor/workflow-webhook@v1
         env:
           webhook_url: ${{secrets.IFTTT_URL}}
