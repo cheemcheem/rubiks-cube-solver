@@ -63,6 +63,9 @@
                         <configuration>
                             <nodeVersion>v11.4.0</nodeVersion>
                             <npmVersion>6.13.7</npmVersion>
+                            <environmentVariables>
+                                <PATH>/bin:/usr/bin</PATH>
+                            </environmentVariables>
                         </configuration>
                     </execution>
                     <execution>
@@ -72,6 +75,9 @@
                         </goals>
                         <configuration>
                             <arguments>install</arguments>
+                            <environmentVariables>
+                                <PATH>/bin:/usr/bin</PATH>
+                            </environmentVariables>
                         </configuration>
                     </execution>
                     <execution>
@@ -81,6 +87,9 @@
                         </goals>
                         <configuration>
                             <arguments>run-script build</arguments>
+                            <environmentVariables>
+                                <PATH>/bin:/usr/bin</PATH>
+                            </environmentVariables>
                         </configuration>
                     </execution>
                 </executions>
