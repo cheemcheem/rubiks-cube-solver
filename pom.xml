@@ -4,6 +4,7 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
     <artifactId>rubiks-cube-solver</artifactId>
     <build>
+        <finalName>rubiks-cube-solver</finalName>
         <plugins>
             <plugin>
                 <artifactId>spring-boot-maven-plugin</artifactId>
@@ -62,6 +63,9 @@
                         <configuration>
                             <nodeVersion>v11.4.0</nodeVersion>
                             <npmVersion>6.13.7</npmVersion>
+                            <environmentVariables>
+                                <PATH>/bin:/usr/bin</PATH>
+                            </environmentVariables>
                         </configuration>
                     </execution>
                     <execution>
@@ -71,6 +75,9 @@
                         </goals>
                         <configuration>
                             <arguments>install</arguments>
+                            <environmentVariables>
+                                <PATH>/bin:/usr/bin</PATH>
+                            </environmentVariables>
                         </configuration>
                     </execution>
                     <execution>
@@ -80,6 +87,9 @@
                         </goals>
                         <configuration>
                             <arguments>run-script build</arguments>
+                            <environmentVariables>
+                                <PATH>/bin:/usr/bin</PATH>
+                            </environmentVariables>
                         </configuration>
                     </execution>
                 </executions>
@@ -89,10 +99,6 @@
 
     <dependencies>
         <dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-thymeleaf</artifactId>
-        </dependency>
-        <dependency>
             <artifactId>spring-boot-starter</artifactId>
             <groupId>org.springframework.boot</groupId>
         </dependency>
@@ -101,17 +107,21 @@
             <groupId>org.springframework.boot</groupId>
         </dependency>
         <dependency>
-            <artifactId>spring-boot-starter-data-redis</artifactId>
-            <groupId>org.springframework.boot</groupId>
+            <groupId>org.springframework.session</groupId>
+            <artifactId>spring-session-jdbc</artifactId>
         </dependency>
         <dependency>
-            <artifactId>spring-session-data-redis</artifactId>
-            <groupId>org.springframework.session</groupId>
+            <artifactId>spring-boot-starter-data-jdbc</artifactId>
+            <groupId>org.springframework.boot</groupId>
         </dependency>
         <dependency>
             <artifactId>h2</artifactId>
             <groupId>com.h2database</groupId>
             <scope>runtime</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.postgresql</groupId>
+            <artifactId>postgresql</artifactId>
         </dependency>
         <dependency>
             <artifactId>lombok</artifactId>
@@ -158,6 +168,7 @@
             <artifactId>commons-lang3</artifactId>
             <version>3.9</version>
         </dependency>
+
     </dependencies>
 
     <description>Rest api for solving cube</description>
