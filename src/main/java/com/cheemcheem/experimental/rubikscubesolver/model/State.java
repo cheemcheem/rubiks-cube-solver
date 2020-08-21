@@ -9,6 +9,7 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.OrderColumn;
 import java.util.List;
 
 @Data
@@ -41,9 +42,11 @@ public class State {
    *     |G|
    * </pre>
    */
+  @OrderColumn
   @ElementCollection
   private List<Colour> colours;
 
+  @OrderColumn
   @ElementCollection
   private List<Move> history;
 
