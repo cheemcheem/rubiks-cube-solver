@@ -1,4 +1,4 @@
-## Rubiks Cube Solver ![Java CI](https://github.com/cheemcheem/rubiks-cube-solver/workflows/Java%20CI/badge.svg?branch=master)
+## Rubiks Cube Solver ![latest version](https://github.com/cheemcheem/rubiks-cube-solver/workflows/CD/badge.svg) ![latest release](https://github.com/cheemcheem/rubiks-cube-solver/workflows/Release/badge.svg)
 *currently more like a visualiser than a solver*
 
 #### What this aims to be
@@ -9,9 +9,9 @@ A web app and rest endpoint. The rest endpoint stores a rubiks cube on your sess
 
 #### How this works
 1. User browses to home page
-1. Page requests a rubiks cube is generated for this browser session, or retrieves the rubiks cube from the previous session
+1. Page requests to generate a rubiks cube for this browser session, or retrieves the rubiks cube from the previous session
 1. Page requests the generated rubiks cube and displays it to the user
-1. When buttons are clicked, the appropriate move/shuffle/reset request will be sent and then the new cube will be retrieved and displayed.
+1. When clicking a button, the appropriate move/shuffle/reset request will be sent and then the new cube will be retrieved and displayed.
 
 #### Usage
 1. `$ git clone https://github.com/cheemcheem/rubiks-cube-solver.git`
