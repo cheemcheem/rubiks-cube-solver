@@ -1,7 +1,6 @@
 {
-  "compileOnSave": true,
   "compilerOptions": {
-    "target": "es6",
+    "target": "es5",
     "lib": [
       "dom",
       "dom.iterable",
@@ -21,6 +20,6 @@
     "jsx": "react"
   },
   "include": [
-    "src/main/js"
+    "src"
   ]
 }
