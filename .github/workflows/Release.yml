@@ -18,6 +18,9 @@ jobs:
           java-version: ${{ matrix.java-version }}
       - name: Run Tests
         run: mvn -B test
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
   release:
     name: Create Release
     runs-on: ubuntu-latest
