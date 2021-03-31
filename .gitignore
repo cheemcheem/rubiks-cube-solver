@@ -1,6 +1,12 @@
 !src/main/**
 !src/test/**
 
+.classpath
+.factorypath
+.project
+.settings/
+.vscode/
+
 node_modules/
 
 # Created by https://www.gitignore.io/api/java,macos,maven,intellij+all,visualstudiocode
