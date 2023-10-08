@@ -1,0 +1,54 @@
+{
+  "ignorePatterns": [
+    "node_modules",
+    "dist"
+  ],
+  "env": {
+    "browser": true,
+    "es2021": true,
+    "node": true
+  },
+  "overrides": [
+    {
+      "files": [
+        "**/*.ts?(x)",
+        "**/*.js?(x)"
+      ],
+      "extends": [
+        "standard-with-typescript",
+        "plugin:react/recommended",
+        "plugin:react/jsx-runtime",
+        "plugin:prettier/recommended"
+      ],
+      "plugins": [
+        "react"
+      ],
+      "settings": {
+        "react": {
+          "version": "detect"
+        }
+      }
+    },
+    {
+      "files": ["esbuild*"],
+      "parserOptions": {
+        "project": "tsconfig.build.json"
+      }
+    },
+    {
+      "env": {
+        "node": true
+      },
+      "files": [
+        ".eslintrc.{js,cjs}"
+      ],
+      "parserOptions": {
+        "sourceType": "script"
+      }
+    }
+  ],
+  "parserOptions": {
+    "ecmaVersion": "latest",
+    "sourceType": "module"
+  }
+}

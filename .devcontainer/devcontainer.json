@@ -1,0 +1,28 @@
+// For format details, see https://aka.ms/devcontainer.json. For config options, see the README at:
+// https://github.com/microsoft/vscode-dev-containers/tree/v0.245.2/containers/typescript-node
+{
+  "name": "Rubiks",
+  "build": {
+    "dockerfile": "Dockerfile",
+    "args": {
+      "VARIANT": "20"
+    }
+  },
+
+  "customizations": {
+    "vscode": {
+      "extensions": ["dbaeumer.vscode-eslint", "esbenp.prettier-vscode"]
+    }
+  },
+
+  "mounts": [
+    "source=rubiks-node_modules,target=${containerWorkspaceFolder}/node_modules,type=volume"
+  ],
+
+  // Use 'postCreateCommand' to run commands after the container is created.
+  "postCreateCommand": "sudo chown node node_modules && yarn install && sudo chmod +x .husky/pre-commit && git config --global --add safe.directory ${containerWorkspaceFolder}",
+
+  "features": {
+    "git": "latest"
+  }
+}
